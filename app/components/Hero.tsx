@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative w-full h-screen min-h-[600px] overflow-hidden flex items-end"
+      className="relative w-full h-screen min-h-[600px] overflow-hidden flex items-end mb-6 md:mb-2"
     >
       {/* Background image — uses plain img to bypass Next.js image cache */}
       <div className="absolute inset-0">
