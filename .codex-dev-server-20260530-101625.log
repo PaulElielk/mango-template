@@ -1,0 +1,22 @@
+
+> mango-store@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.28:3001
+✓ Ready in 407ms
+
+ GET /shop 200 in 419ms (next.js: 169ms, application-code: 250ms)
+ GET /shop 200 in 72ms (next.js: 4ms, application-code: 68ms)
+ GET /shop 200 in 51ms (next.js: 1950µs, application-code: 49ms)
+ GET /shop 200 in 53ms (next.js: 1739µs, application-code: 51ms)
+ GET /shop 200 in 54ms (next.js: 1896µs, application-code: 52ms)
+ GET / 200 in 89ms (next.js: 27ms, application-code: 63ms)
+ GET /shop 200 in 66ms (next.js: 2ms, application-code: 64ms)
+ GET /contact 200 in 58ms (next.js: 22ms, application-code: 36ms)
+ GET /faq 200 in 55ms (next.js: 18ms, application-code: 36ms)
+ GET /livraison-retours 200 in 62ms (next.js: 23ms, application-code: 39ms)
+ GET /politique-confidentialite 200 in 57ms (next.js: 21ms, application-code: 35ms)
+ GET /conditions-generales 200 in 55ms (next.js: 22ms, application-code: 33ms)
+ GET /shop/robe-midi-ivoire 200 in 394ms (next.js: 331ms, generate-params: 306ms, application-code: 63ms)

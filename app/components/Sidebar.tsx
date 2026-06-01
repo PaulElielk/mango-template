@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { X, ChevronRight } from "lucide-react";
 import { categories } from "@/app/data/products";
 import { useShop } from "@/app/context/ShopContext";
@@ -104,7 +105,10 @@ export default function Sidebar() {
               {collectionLinks.map((link) => (
                 <li key={link}>
                   <button
-                    onClick={closeMenu}
+                    onClick={() => {
+                      router.push(`/shop?search=${encodeURIComponent(link)}`);
+                      closeMenu();
+                    }}
                     className="w-full flex items-center justify-between px-6 py-3.5 text-[13px] tracking-wide hover:bg-gray-50 transition-colors text-left min-h-[52px]"
                   >
                     <span>{link}</span>
@@ -118,15 +122,15 @@ export default function Sidebar() {
 
         {/* Footer */}
         <div className="px-6 py-5 border-t border-gray-100 space-y-3">
-          <a href="#" className="block text-[12px] tracking-wide text-gray-500 hover:text-black transition-colors py-1">
-            Mon Compte
-          </a>
-          <a href="#" className="block text-[12px] tracking-wide text-gray-500 hover:text-black transition-colors py-1">
+          <span className="block text-[12px] tracking-wide text-gray-400 py-1" aria-disabled="true">
+            Mon Compte · Bientôt disponible
+          </span>
+          <Link href="/contact" onClick={closeMenu} className="block text-[12px] tracking-wide text-gray-500 hover:text-black transition-colors py-1">
             Service Client
-          </a>
-          <a href="#" className="block text-[12px] tracking-wide text-gray-500 hover:text-black transition-colors py-1">
+          </Link>
+          <Link href="/faq" onClick={closeMenu} className="block text-[12px] tracking-wide text-gray-500 hover:text-black transition-colors py-1">
             Aide & FAQ
-          </a>
+          </Link>
         </div>
       </div>
     </>

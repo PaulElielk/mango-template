@@ -2,100 +2,387 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { X, Minus, Plus, ShoppingBag, Trash2, CreditCard, CheckCircle } from "lucide-react";
-import { useShop } from "@/app/context/ShopContext";
+import Link from "next/link";
+import { X, Minus, Plus, ShoppingBag, Trash2, ClipboardList, CheckCircle } from "lucide-react";
+import { useShop, type CartItem } from "@/app/context/ShopContext";
 import { formatFCFA } from "@/app/data/products";
 
-// ─── Payment Modal ─────────────────────────────────────────────────────────────
-
-const PAYMENT_METHODS = [
-  { id: "card", label: "Carte Bancaire", icon: "💳" },
-  { id: "orange", label: "Orange Money", icon: "🟠" },
-  { id: "moov", label: "Moov Money", icon: "🔵" },
-  { id: "wave", label: "Wave", icon: "🌊" },
+const CONTACT_METHODS = ["WhatsApp", "Appel", "Email"];
+const DELIVERY_OPTIONS = ["Retrait en boutique", "Livraison à domicile"];
+const PAYMENT_INTENTS = [
+  "Paiement à la livraison",
+  "Paiement mobile money à confirmer",
+  "Paiement en ligne bientôt disponible",
 ];
 
-function PaymentModal({
+type OrderRequestForm = {
+  fullName: string;
+  phone: string;
+  email: string;
+  city: string;
+  address: string;
+  contactMethod: string;
+  deliveryOption: string;
+  paymentIntent: string;
+  note: string;
+};
+
+type OrderRequestErrors = Partial<Record<keyof OrderRequestForm, string>>;
+
+const initialOrderRequestForm: OrderRequestForm = {
+  fullName: "",
+  phone: "",
+  email: "",
+  city: "",
+  address: "",
+  contactMethod: CONTACT_METHODS[0],
+  deliveryOption: DELIVERY_OPTIONS[0],
+  paymentIntent: PAYMENT_INTENTS[0],
+  note: "",
+};
+
+function generateOrderReference() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const timestamp = now
+    .toISOString()
+    .replace(/\D/g, "")
+    .slice(4, 14);
+
+  return `CMD-${year}-${timestamp}`;
+}
+
+function validateOrderRequest(form: OrderRequestForm) {
+  const errors: OrderRequestErrors = {};
+
+  if (!form.fullName.trim()) errors.fullName = "Le nom complet est requis.";
+  if (!form.phone.trim()) errors.phone = "Le téléphone est requis.";
+  if (!form.city.trim()) errors.city = "La ville ou commune est requise.";
+  if (!form.address.trim()) {
+    errors.address = "L’adresse ou l’indication de livraison est requise.";
+  }
+  if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+    errors.email = "Veuillez saisir une adresse e-mail valide.";
+  }
+
+  return errors;
+}
+
+function OrderRequestModal({
+  items,
   total,
   onClose,
-  onConfirm,
+  onFinish,
 }: {
+  items: CartItem[];
   total: number;
   onClose: () => void;
-  onConfirm: () => void;
+  onFinish: () => void;
 }) {
-  const [selected, setSelected] = useState("card");
-  const [confirmed, setConfirmed] = useState(false);
+  const [form, setForm] = useState<OrderRequestForm>(initialOrderRequestForm);
+  const [errors, setErrors] = useState<OrderRequestErrors>({});
+  const [orderReference, setOrderReference] = useState<string | null>(null);
+  const isConfirmed = orderReference !== null;
 
-  const handleConfirm = () => {
-    setConfirmed(true);
-    setTimeout(() => {
-      onConfirm();
-    }, 2000);
+  const handleChange =
+    (field: keyof OrderRequestForm) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setForm((current) => ({ ...current, [field]: event.target.value }));
+      setErrors((current) => ({ ...current, [field]: undefined }));
+    };
+
+  const handleChoice = (field: keyof OrderRequestForm, value: string) => {
+    setForm((current) => ({ ...current, [field]: value }));
   };
 
-  return (
-    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const nextErrors = validateOrderRequest(form);
+    setErrors(nextErrors);
 
-      {/* Modal */}
-      <div className="relative bg-white w-full max-w-sm rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl z-10">
-        {confirmed ? (
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setOrderReference(generateOrderReference());
+  };
+
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isConfirmed) onClose();
+    };
+
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [isConfirmed, onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={isConfirmed ? undefined : onClose}
+      />
+
+      <div className="relative bg-white w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl z-10 flex flex-col">
+        {isConfirmed ? (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
             <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center mb-6 animate-[scale-in_0.4s_ease]">
               <CheckCircle className="text-white" size={32} />
             </div>
-            <h3 className="text-lg font-medium tracking-wide mb-2">Commande confirmée!</h3>
-            <p className="text-[13px] text-gray-500">
-              Vous recevrez une confirmation par SMS.
+            <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 mb-3">
+              Demande préparée
             </p>
+            <h3 className="text-lg font-medium tracking-wide mb-2">{orderReference}</h3>
+            <p className="text-[13px] text-gray-500 leading-6 max-w-md">
+              Votre demande de commande a été préparée. La connexion à l’envoi réel sera ajoutée lors de la mise en production.
+            </p>
+            <button
+              type="button"
+              onClick={onFinish}
+              className="mt-8 bg-black text-white text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:bg-gray-900 transition-colors min-h-[52px]"
+            >
+              Terminer
+            </button>
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-              <h3 className="text-[13px] font-semibold tracking-[0.1em] uppercase">
-                Choisir un mode de paiement
-              </h3>
-              <button onClick={onClose} className="p-1 hover:opacity-60 transition-opacity">
+            <div className="flex items-center justify-between px-5 sm:px-6 py-5 border-b border-gray-100 shrink-0">
+              <div>
+                <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 mb-1">
+                  Prototype
+                </p>
+                <h3 className="text-[13px] font-semibold tracking-[0.1em] uppercase">
+                  Demande de commande
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Fermer la demande de commande"
+                className="p-1 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center"
+              >
                 <X size={18} strokeWidth={1.5} />
               </button>
             </div>
 
-            <div className="px-6 py-5 space-y-3">
-              {PAYMENT_METHODS.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setSelected(m.id)}
-                  className={`w-full flex items-center gap-4 p-4 border rounded-lg text-left transition-all ${
-                    selected === m.id
-                      ? "border-black bg-black/[0.03]"
-                      : "border-gray-200 hover:border-gray-400"
-                  }`}
-                >
-                  <span className="text-2xl">{m.icon}</span>
-                  <span className="text-[13px] font-medium tracking-wide">{m.label}</span>
-                  {selected === m.id && (
-                    <div className="ml-auto w-4 h-4 rounded-full bg-black flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <div className="px-6 pb-6">
-              <div className="flex justify-between text-[13px] mb-5">
-                <span className="text-gray-500">Total à payer</span>
-                <span className="font-semibold">{formatFCFA(total)}</span>
+            <form onSubmit={handleSubmit} noValidate className="overflow-y-auto">
+              <div className="px-5 sm:px-6 py-5 border-b border-gray-100">
+                <p className="text-[12px] leading-6 text-gray-500">
+                  Cette commande sera envoyée comme une demande. Le paiement réel sera confirmé après contact avec la boutique.
+                </p>
               </div>
-              <button
-                onClick={handleConfirm}
-                className="w-full bg-black text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-gray-900 transition-colors"
-              >
-                Confirmer le paiement
-              </button>
-            </div>
+
+              <div className="px-5 sm:px-6 py-5 border-b border-gray-100">
+                <p className="text-[10px] tracking-[0.2em] uppercase text-gray-400 mb-4">
+                  Récapitulatif
+                </p>
+                <ul className="space-y-3">
+                  {items.map((item) => (
+                    <li key={item.cartId} className="flex justify-between gap-4 text-[12px]">
+                      <div className="min-w-0">
+                        <p className="font-medium tracking-wide truncate">{item.product.name}</p>
+                        <p className="text-gray-500 mt-1">
+                          Taille {item.size} · Couleur {item.color} · Qté {item.quantity}
+                        </p>
+                      </div>
+                      <span className="font-medium shrink-0">
+                        {formatFCFA(item.product.priceValue * item.quantity)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-between text-[13px] mt-5 pt-4 border-t border-gray-100">
+                  <span className="text-gray-500">Sous-total</span>
+                  <span className="font-semibold">{formatFCFA(total)}</span>
+                </div>
+              </div>
+
+              <div className="px-5 sm:px-6 py-5 grid gap-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
+                    Nom complet
+                    <input
+                      name="fullName"
+                      value={form.fullName}
+                      onChange={handleChange("fullName")}
+                      autoComplete="name"
+                      aria-invalid={Boolean(errors.fullName)}
+                      aria-describedby={errors.fullName ? "order-full-name-error" : undefined}
+                      className="border border-gray-200 px-4 py-3 text-[13px] tracking-wide normal-case outline-none focus:border-black"
+                    />
+                    {errors.fullName && (
+                      <span id="order-full-name-error" className="text-[11px] normal-case tracking-normal text-red-600">
+                        {errors.fullName}
+                      </span>
+                    )}
+                  </label>
+
+                  <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
+                    Téléphone
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={form.phone}
+                      onChange={handleChange("phone")}
+                      autoComplete="tel"
+                      aria-invalid={Boolean(errors.phone)}
+                      aria-describedby={errors.phone ? "order-phone-error" : undefined}
+                      className="border border-gray-200 px-4 py-3 text-[13px] tracking-wide normal-case outline-none focus:border-black"
+                    />
+                    {errors.phone && (
+                      <span id="order-phone-error" className="text-[11px] normal-case tracking-normal text-red-600">
+                        {errors.phone}
+                      </span>
+                    )}
+                  </label>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
+                    Email
+                    <input
+                      name="email"
+                      type="email"
+                      value={form.email}
+                      onChange={handleChange("email")}
+                      autoComplete="email"
+                      aria-invalid={Boolean(errors.email)}
+                      aria-describedby={errors.email ? "order-email-error" : undefined}
+                      className="border border-gray-200 px-4 py-3 text-[13px] tracking-wide normal-case outline-none focus:border-black"
+                    />
+                    {errors.email && (
+                      <span id="order-email-error" className="text-[11px] normal-case tracking-normal text-red-600">
+                        {errors.email}
+                      </span>
+                    )}
+                  </label>
+
+                  <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
+                    Ville / commune
+                    <input
+                      name="city"
+                      value={form.city}
+                      onChange={handleChange("city")}
+                      autoComplete="address-level2"
+                      aria-invalid={Boolean(errors.city)}
+                      aria-describedby={errors.city ? "order-city-error" : undefined}
+                      className="border border-gray-200 px-4 py-3 text-[13px] tracking-wide normal-case outline-none focus:border-black"
+                    />
+                    {errors.city && (
+                      <span id="order-city-error" className="text-[11px] normal-case tracking-normal text-red-600">
+                        {errors.city}
+                      </span>
+                    )}
+                  </label>
+                </div>
+
+                <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
+                  Adresse ou indication de livraison
+                  <textarea
+                    name="address"
+                    rows={3}
+                    value={form.address}
+                    onChange={handleChange("address")}
+                    autoComplete="street-address"
+                    aria-invalid={Boolean(errors.address)}
+                    aria-describedby={errors.address ? "order-address-error" : undefined}
+                    className="border border-gray-200 px-4 py-3 text-[13px] tracking-wide normal-case outline-none focus:border-black resize-none"
+                  />
+                  {errors.address && (
+                    <span id="order-address-error" className="text-[11px] normal-case tracking-normal text-red-600">
+                      {errors.address}
+                    </span>
+                  )}
+                </label>
+
+                <fieldset className="grid gap-2">
+                  <legend className="text-[11px] tracking-[0.18em] uppercase">
+                    Mode de contact préféré
+                  </legend>
+                  <div className="grid grid-cols-3 gap-2">
+                    {CONTACT_METHODS.map((method) => (
+                      <button
+                        key={method}
+                        type="button"
+                        onClick={() => handleChoice("contactMethod", method)}
+                        aria-pressed={form.contactMethod === method}
+                        className={`border px-3 py-3 text-[11px] tracking-wide transition-colors min-h-[44px] ${
+                          form.contactMethod === method
+                            ? "border-black bg-black text-white"
+                            : "border-gray-200 hover:border-black"
+                        }`}
+                      >
+                        {method}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset className="grid gap-2">
+                  <legend className="text-[11px] tracking-[0.18em] uppercase">
+                    Livraison
+                  </legend>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {DELIVERY_OPTIONS.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => handleChoice("deliveryOption", option)}
+                        aria-pressed={form.deliveryOption === option}
+                        className={`border px-3 py-3 text-[11px] tracking-wide transition-colors min-h-[44px] ${
+                          form.deliveryOption === option
+                            ? "border-black bg-black text-white"
+                            : "border-gray-200 hover:border-black"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset className="grid gap-2">
+                  <legend className="text-[11px] tracking-[0.18em] uppercase">
+                    Intention de paiement
+                  </legend>
+                  <div className="grid gap-2">
+                    {PAYMENT_INTENTS.map((intent) => (
+                      <button
+                        key={intent}
+                        type="button"
+                        onClick={() => handleChoice("paymentIntent", intent)}
+                        aria-pressed={form.paymentIntent === intent}
+                        className={`border px-3 py-3 text-[11px] tracking-wide text-left transition-colors min-h-[44px] ${
+                          form.paymentIntent === intent
+                            ? "border-black bg-black text-white"
+                            : "border-gray-200 hover:border-black"
+                        }`}
+                      >
+                        {intent}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
+                  Note complémentaire
+                  <textarea
+                    name="note"
+                    rows={3}
+                    value={form.note}
+                    onChange={handleChange("note")}
+                    className="border border-gray-200 px-4 py-3 text-[13px] tracking-wide normal-case outline-none focus:border-black resize-none"
+                  />
+                </label>
+              </div>
+
+              <div className="px-5 sm:px-6 pb-6">
+                <button
+                  type="submit"
+                  className="w-full bg-black text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-gray-900 transition-colors min-h-[52px]"
+                >
+                  Préparer la demande
+                </button>
+              </div>
+            </form>
           </>
         )}
       </div>
@@ -103,48 +390,60 @@ function PaymentModal({
   );
 }
 
-// ─── Cart Drawer ───────────────────────────────────────────────────────────────
-
 export default function CartDrawer() {
-  const { isCartOpen, closeCart, cartItems, cartTotal, cartCount, removeFromCart, updateQuantity, clearCart } =
-    useShop();
-  const [showPayment, setShowPayment] = useState(false);
+  const {
+    isCartOpen,
+    closeCart,
+    cartItems,
+    cartTotal,
+    cartCount,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+  } = useShop();
+  const [showOrderRequest, setShowOrderRequest] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const hasItems = cartItems.length > 0;
 
-  // Close on Escape
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeCart();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !showOrderRequest) closeCart();
     };
+
     if (isCartOpen) document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [isCartOpen, closeCart]);
+  }, [isCartOpen, showOrderRequest, closeCart]);
 
-  // Body scroll lock
   useEffect(() => {
     if (isCartOpen) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isCartOpen]);
 
-  const handlePaymentConfirm = () => {
-    setShowPayment(false);
+  const handleCloseCart = () => {
+    setShowOrderRequest(false);
+    closeCart();
+  };
+
+  const handleOrderFinish = () => {
+    setShowOrderRequest(false);
     clearCart();
     closeCart();
   };
 
   return (
     <>
-      {/* Backdrop */}
       <div
         id="cart-backdrop"
-        onClick={closeCart}
+        onClick={handleCloseCart}
         className={`fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
           isCartOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       />
 
-      {/* Drawer panel */}
       <div
         ref={drawerRef}
         id="cart-drawer"
@@ -153,7 +452,6 @@ export default function CartDrawer() {
           transition-transform duration-400 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
           ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-3">
             <ShoppingBag size={18} strokeWidth={1.5} />
@@ -167,8 +465,9 @@ export default function CartDrawer() {
             )}
           </div>
           <button
+            type="button"
             id="cart-close-btn"
-            onClick={closeCart}
+            onClick={handleCloseCart}
             aria-label="Fermer le panier"
             className="p-2 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
@@ -176,26 +475,25 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {/* Body */}
         <div className="flex-1 overflow-y-auto">
-          {cartItems.length === 0 ? (
+          {!hasItems ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
               <ShoppingBag size={48} strokeWidth={1} className="text-gray-200" />
               <p className="text-[13px] text-gray-500 tracking-wide">
                 Votre panier est vide.
               </p>
-              <button
-                onClick={closeCart}
+              <Link
+                href="/shop"
+                onClick={handleCloseCart}
                 className="border border-black text-black text-[10px] tracking-[0.2em] uppercase px-8 py-3 hover:bg-black hover:text-white transition-all duration-300 min-h-[44px]"
               >
-                Continuer mes achats
-              </button>
+                Découvrir la collection
+              </Link>
             </div>
           ) : (
             <ul className="divide-y divide-gray-100">
               {cartItems.map((item) => (
                 <li key={item.cartId} className="flex gap-4 px-5 py-5">
-                  {/* Image */}
                   <div className="relative w-20 h-28 bg-gray-50 shrink-0 overflow-hidden">
                     <Image
                       src={item.product.image}
@@ -206,7 +504,6 @@ export default function CartDrawer() {
                     />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 flex flex-col justify-between min-w-0">
                     <div>
                       <p className="text-[10px] text-gray-400 tracking-wide mb-0.5">
@@ -215,37 +512,58 @@ export default function CartDrawer() {
                       <p className="text-[13px] font-medium leading-snug truncate">
                         {item.product.name}
                       </p>
-                      <p className="text-[11px] text-gray-500 mt-1 tracking-wide">
-                        {item.size} · {item.color}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between mt-3">
-                      {/* Qty adjuster */}
-                      <div className="flex items-center border border-gray-200">
-                        <button
-                          onClick={() => updateQuantity(item.cartId, -1)}
-                          aria-label="Diminuer"
-                          className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                        >
-                          <Minus size={12} strokeWidth={1.5} />
-                        </button>
-                        <span className="w-8 text-center text-[12px]">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.cartId, 1)}
-                          aria-label="Augmenter"
-                          className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                        >
-                          <Plus size={12} strokeWidth={1.5} />
-                        </button>
+                      <div className="mt-2 space-y-0.5 text-[11px] text-gray-500 tracking-wide">
+                        <p>
+                          <span className="text-gray-400">Taille</span> {item.size}
+                        </p>
+                        <p>
+                          <span className="text-gray-400">Couleur</span> {item.color}
+                        </p>
+                        {item.product.stockStatus === "Low Stock" && (
+                          <p className="text-black">Stock limité</p>
+                        )}
                       </div>
-                      <p className="text-[13px] font-medium">{item.product.price}</p>
+                    </div>
+                    <div className="flex items-end justify-between mt-3 gap-3">
+                      <div>
+                        <p className="text-[9px] uppercase tracking-[0.18em] text-gray-400 mb-1">
+                          Quantité
+                        </p>
+                        <div className="flex items-center border border-gray-200">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.cartId, -1)}
+                            aria-label={`Diminuer la quantité de ${item.product.name}`}
+                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                          >
+                            <Minus size={12} strokeWidth={1.5} />
+                          </button>
+                          <span className="w-8 text-center text-[12px]">{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.cartId, 1)}
+                            aria-label={`Augmenter la quantité de ${item.product.name}`}
+                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                          >
+                            <Plus size={12} strokeWidth={1.5} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] text-gray-400 mb-0.5">
+                          Unité {item.product.price}
+                        </p>
+                        <p className="text-[13px] font-medium">
+                          {formatFCFA(item.product.priceValue * item.quantity)}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Delete */}
                   <button
+                    type="button"
                     onClick={() => removeFromCart(item.cartId)}
-                    aria-label="Supprimer"
+                    aria-label={`Supprimer ${item.product.name} du panier`}
                     className="self-start p-2 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center"
                   >
                     <Trash2 size={14} strokeWidth={1.5} className="text-gray-400" />
@@ -256,34 +574,33 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer */}
-        {cartItems.length > 0 && (
-          <div className="shrink-0 border-t border-gray-100 px-5 py-5 space-y-4">
-            <div className="flex justify-between text-[13px]">
-              <span className="text-gray-500">Sous-total</span>
-              <span className="font-semibold">{formatFCFA(cartTotal)}</span>
-            </div>
-            <p className="text-[10px] text-gray-400 tracking-wide">
-              Livraison gratuite à partir de 50 000 FCFA
-            </p>
-            <button
-              id="checkout-btn"
-              onClick={() => setShowPayment(true)}
-              className="w-full bg-black text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-gray-900 transition-colors flex items-center justify-center gap-2 min-h-[52px]"
-            >
-              <CreditCard size={14} strokeWidth={1.5} />
-              Paiement
-            </button>
+        <div className="shrink-0 border-t border-gray-100 px-5 py-5 space-y-4">
+          <div className="flex justify-between text-[13px]">
+            <span className="text-gray-500">Sous-total</span>
+            <span className="font-semibold">{formatFCFA(cartTotal)}</span>
           </div>
-        )}
+          <p className="text-[10px] text-gray-400 tracking-wide">
+            Livraison gratuite à partir de 50 000 FCFA
+          </p>
+          <button
+            type="button"
+            id="checkout-btn"
+            onClick={() => setShowOrderRequest(true)}
+            disabled={!hasItems}
+            className="w-full bg-black text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-gray-900 transition-colors flex items-center justify-center gap-2 min-h-[52px] disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
+          >
+            <ClipboardList size={14} strokeWidth={1.5} />
+            Demande de commande
+          </button>
+        </div>
       </div>
 
-      {/* Payment modal */}
-      {showPayment && (
-        <PaymentModal
+      {showOrderRequest && hasItems && (
+        <OrderRequestModal
+          items={cartItems}
           total={cartTotal}
-          onClose={() => setShowPayment(false)}
-          onConfirm={handlePaymentConfirm}
+          onClose={() => setShowOrderRequest(false)}
+          onFinish={handleOrderFinish}
         />
       )}
     </>

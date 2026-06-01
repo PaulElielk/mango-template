@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
-import { Product } from "@/app/data/products";
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
+import { mockProducts, Product } from "@/app/data/products";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -11,6 +11,73 @@ export interface CartItem {
   quantity: number;
   size: string;
   color: string;
+}
+
+type StoredCartItem = {
+  cartId?: unknown;
+  productId?: unknown;
+  product?: { id?: unknown };
+  quantity?: unknown;
+  size?: unknown;
+  color?: unknown;
+};
+
+const CART_STORAGE_KEY = "mango-store-cart";
+
+function buildCartId(productId: number, size: string, color: string) {
+  return `${productId}-${size}-${color}`;
+}
+
+function sanitizeStoredCart(rawValue: string | null): CartItem[] {
+  if (!rawValue) return [];
+
+  try {
+    const parsed: unknown = JSON.parse(rawValue);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed.reduce<CartItem[]>((items, rawItem) => {
+      const item = rawItem as StoredCartItem;
+      const productId =
+        typeof item.productId === "number"
+          ? item.productId
+          : typeof item.product?.id === "number"
+            ? item.product.id
+            : null;
+      const product = mockProducts.find((candidate) => candidate.id === productId);
+      const size = typeof item.size === "string" ? item.size : "";
+      const color = typeof item.color === "string" ? item.color : "";
+      const quantity =
+        typeof item.quantity === "number" && Number.isFinite(item.quantity)
+          ? Math.floor(item.quantity)
+          : 0;
+
+      if (!product || quantity <= 0) return items;
+      if (!product.sizes.includes(size) || !product.colors.includes(color)) return items;
+
+      items.push({
+        cartId: buildCartId(product.id, size, color),
+        product,
+        quantity,
+        size,
+        color,
+      });
+
+      return items;
+    }, []);
+  } catch {
+    return [];
+  }
+}
+
+function serializeCartItems(cartItems: CartItem[]) {
+  return JSON.stringify(
+    cartItems.map((item) => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+      size: item.size,
+      color: item.color,
+    }))
+  );
 }
 
 interface ShopContextValue {
@@ -46,17 +113,43 @@ const ShopContext = createContext<ShopContextValue | null>(null);
 
 export function ShopProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [hasHydratedCart, setHasHydratedCart] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  useEffect(() => {
+    const restoredCartItems = sanitizeStoredCart(
+      window.localStorage.getItem(CART_STORAGE_KEY)
+    );
+
+    // Hydration from browser storage must happen after mount to keep server HTML stable.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCartItems(restoredCartItems);
+    setHasHydratedCart(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedCart) return;
+
+    try {
+      if (cartItems.length === 0) {
+        window.localStorage.removeItem(CART_STORAGE_KEY);
+      } else {
+        window.localStorage.setItem(CART_STORAGE_KEY, serializeCartItems(cartItems));
+      }
+    } catch {
+      // Storage can be unavailable in private mode; cart still works in memory.
+    }
+  }, [cartItems, hasHydratedCart]);
 
   // ── Cart actions ────────────────────────────────────────────────────────────
 
   const addToCart = useCallback((product: Product, size?: string, color?: string) => {
     const resolvedSize = size ?? product.sizes[0] ?? "Unique";
     const resolvedColor = color ?? product.colors[0] ?? "Unique";
-    const cartId = `${product.id}-${resolvedSize}-${resolvedColor}`;
+    const cartId = buildCartId(product.id, resolvedSize, resolvedColor);
 
     setCartItems((prev) => {
       const existing = prev.find((i) => i.cartId === cartId);
@@ -98,11 +191,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   const cartTotal = useMemo(
     () =>
-      cartItems.reduce((sum, i) => {
-        // price is stored as "45 000 FCFA" — strip non-digit chars except space
-        const numericStr = i.product.price.replace(/[^\d]/g, "");
-        return sum + parseInt(numericStr || "0", 10) * i.quantity;
-      }, 0),
+      cartItems.reduce((sum, i) => sum + i.product.priceValue * i.quantity, 0),
     [cartItems]
   );
 

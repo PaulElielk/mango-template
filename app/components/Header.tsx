@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Search, User, ShoppingBag, Menu } from "lucide-react";
 import { categories } from "@/app/data/products";
 import { useShop } from "@/app/context/ShopContext";
@@ -9,7 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function Header() {
   const { cartCount, openCart, openMenu, openSearch } = useShop();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartPulse, setCartPulse] = useState(false);
+  const [showAccountNotice, setShowAccountNotice] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get("category") ?? "Nouveautés";
@@ -21,12 +22,11 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (cartCount > 0) {
-      setCartPulse(true);
-      const t = setTimeout(() => setCartPulse(false), 400);
-      return () => clearTimeout(t);
-    }
-  }, [cartCount]);
+    if (!showAccountNotice) return;
+
+    const timeout = window.setTimeout(() => setShowAccountNotice(false), 3500);
+    return () => window.clearTimeout(timeout);
+  }, [showAccountNotice]);
 
   function handleCategoryClick(cat: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -60,6 +60,7 @@ export default function Header() {
         {/* Left: Hamburger (mobile) / Desktop nav */}
         <div className="flex items-center gap-4 w-1/3">
           <button
+            type="button"
             id="hamburger-btn"
             onClick={openMenu}
             className="md:hidden p-2 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -72,6 +73,7 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-6">
             {categories.slice(0, 5).map((cat) => (
               <button
+                type="button"
                 key={cat}
                 onClick={() => handleCategoryClick(cat)}
                 className={`nav-link text-[11px] uppercase tracking-[0.12em] font-medium transition-opacity ${
@@ -88,17 +90,18 @@ export default function Header() {
 
         {/* Center: Logo */}
         <div className="flex justify-center w-1/3">
-          <a
+          <Link
             href="/"
             className="logo-text text-xl font-semibold tracking-[0.3em] uppercase select-none"
           >
             Prototype
-          </a>
+          </Link>
         </div>
 
         {/* Right: Icons */}
         <div className="flex items-center justify-end gap-1 md:gap-3 w-1/3">
           <button
+            type="button"
             id="search-btn"
             onClick={openSearch}
             aria-label="Rechercher"
@@ -107,13 +110,16 @@ export default function Header() {
             <Search size={18} strokeWidth={1.5} />
           </button>
           <button
+            type="button"
             id="account-btn"
+            onClick={() => setShowAccountNotice(true)}
             aria-label="Mon compte"
             className="p-2 hover:opacity-60 transition-opacity hidden md:flex min-w-[44px] min-h-[44px] items-center justify-center"
           >
             <User size={18} strokeWidth={1.5} />
           </button>
           <button
+            type="button"
             id="cart-btn"
             onClick={openCart}
             aria-label="Panier"
@@ -122,9 +128,8 @@ export default function Header() {
             <ShoppingBag size={18} strokeWidth={1.5} />
             {cartCount > 0 && (
               <span
-                className={`absolute top-1 right-1 bg-black text-white text-[9px] font-semibold w-4 h-4 flex items-center justify-center rounded-full ${
-                  cartPulse ? "cart-badge-pulse" : ""
-                }`}
+                key={cartCount}
+                className="absolute top-1 right-1 bg-black text-white text-[9px] font-semibold w-4 h-4 flex items-center justify-center rounded-full cart-badge-pulse"
               >
                 {cartCount}
               </span>
@@ -132,6 +137,14 @@ export default function Header() {
           </button>
         </div>
       </div>
+      {showAccountNotice && (
+        <div
+          role="status"
+          className="absolute right-8 top-[82px] hidden md:block bg-white border border-gray-100 shadow-lg px-4 py-3 text-[12px] tracking-wide text-gray-600"
+        >
+          Espace client bientôt disponible.
+        </div>
+      )}
     </header>
   );
 }

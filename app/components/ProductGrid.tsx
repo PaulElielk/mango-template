@@ -35,7 +35,8 @@ export default function ProductGrid() {
   function clearFilter(key: string) {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(key);
-    router.push(`/?${params.toString()}`);
+    const query = params.toString();
+    router.push(query ? `/shop?${query}` : "/shop");
   }
 
   return (
@@ -115,7 +116,7 @@ export default function ProductGrid() {
           </p>
           {hasFilters && (
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/shop")}
               className="border border-black text-black text-[11px] tracking-[0.2em] uppercase px-8 py-3 hover:bg-black hover:text-white transition-all duration-300 min-h-[44px]"
             >
               Voir tout

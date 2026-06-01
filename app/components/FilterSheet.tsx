@@ -38,11 +38,12 @@ export default function FilterSheet() {
     } else {
       params.set(key, value);
     }
-    router.push(`/?${params.toString()}`);
+    const query = params.toString();
+    router.push(query ? `/shop?${query}` : "/shop");
   }
 
   function clearFilters() {
-    router.push("/");
+    router.push("/shop");
     closeFilter();
   }
 

@@ -1,5 +1,6 @@
 export interface Product {
   id: number;
+  slug: string;
   name: string;
   description: string;
   price: string;
@@ -16,6 +17,7 @@ export interface Product {
 export const mockProducts: Product[] = [
   {
     id: 1,
+    slug: "blazer-ajuste-noir",
     name: "Blazer Ajusté Noir",
     description: "Blazer classique en tissu structuré, coupe slim. Un indispensable du vestiaire féminin.",
     price: "45 000 FCFA",
@@ -25,11 +27,12 @@ export const mockProducts: Product[] = [
     category: "Vestes",
     colors: ["Noir", "Blanc Cassé"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    stockStatus: "In Stock",
+    stockStatus: "Out of Stock",
     isNew: true,
   },
   {
     id: 2,
+    slug: "robe-midi-ivoire",
     name: "Robe Midi Ivoire",
     description: "Robe longue fluide à encolure ronde, tissu léger parfait pour les journées chaudes.",
     price: "38 500 FCFA",
@@ -39,11 +42,12 @@ export const mockProducts: Product[] = [
     category: "Robes",
     colors: ["Ivoire", "Sable"],
     sizes: ["XS", "S", "M", "L"],
-    stockStatus: "In Stock",
+    stockStatus: "Low Stock",
     isNew: true,
   },
   {
     id: 3,
+    slug: "manteau-camel-oversize",
     name: "Manteau Camel Oversize",
     description: "Manteau long en laine mélangée, coupe ample et chaleureuse pour les soirées fraîches.",
     price: "89 000 FCFA",
@@ -57,6 +61,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 4,
+    slug: "pantalon-large-beige",
     name: "Pantalon Large Beige",
     description: "Pantalon wide-leg en lin naturel, taille haute élastiquée. Confort et élégance.",
     price: "32 000 FCFA",
@@ -66,10 +71,11 @@ export const mockProducts: Product[] = [
     category: "Pantalons",
     colors: ["Beige", "Blanc", "Noir"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    stockStatus: "In Stock",
+    stockStatus: "Out of Stock",
   },
   {
     id: 5,
+    slug: "robe-nuisette-marine",
     name: "Robe Nuisette Marine",
     description: "Robe courte en satin, bretelles fines, coupe biais. L'élégance à l'état pur.",
     price: "29 500 FCFA",
@@ -79,11 +85,12 @@ export const mockProducts: Product[] = [
     category: "Robes",
     colors: ["Marine", "Noir", "Bordeaux"],
     sizes: ["XS", "S", "M", "L"],
-    stockStatus: "In Stock",
+    stockStatus: "Low Stock",
     isNew: true,
   },
   {
     id: 6,
+    slug: "pull-col-roule-gris",
     name: "Pull Col Roulé Gris",
     description: "Pull en laine mérinos côtelée, coupe structurée et douce au toucher.",
     price: "27 000 FCFA",
@@ -97,6 +104,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 7,
+    slug: "chemise-lin-blanc",
     name: "Chemise Lin Blanc",
     description: "Chemise oversize en lin lavé, col classique. Parfaite pour un look décontracté chic.",
     price: "22 500 FCFA",
@@ -111,6 +119,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 8,
+    slug: "jupe-midi-cuir-terracotta",
     name: "Jupe Midi Cuir Terracotta",
     description: "Jupe longue en cuir vegan, coupe crayon. Coloris terracotta tendance.",
     price: "55 000 FCFA",
@@ -124,6 +133,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 9,
+    slug: "veste-tweed-ecossais",
     name: "Veste En Tweed Écossais",
     description: "Veste structurée en tweed à carreaux, boutons dorés. Esprit preppy revisité.",
     price: "62 000 FCFA",
@@ -138,6 +148,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 10,
+    slug: "robe-wrap-floral",
     name: "Robe Wrap Floral",
     description: "Robe portefeuille à imprimé floral, fluide et féminine. Idéale pour toutes occasions.",
     price: "34 000 FCFA",
@@ -152,6 +163,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 11,
+    slug: "trench-court-beige",
     name: "Trench Court Beige",
     description: "Trench-coat mi-long en gabardine, ceinture à nouer. Le classique revisité.",
     price: "78 000 FCFA",
@@ -165,6 +177,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 12,
+    slug: "jean-straight-taille-haute",
     name: "Jean Straight Taille Haute",
     description: "Jean coupe droite en denim brut, taille haute ajustée. Un basique essentiel.",
     price: "41 000 FCFA",
@@ -178,6 +191,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 13,
+    slug: "top-crochet-ivoire",
     name: "Top Crochet Ivoire",
     description: "Haut en crochet fait main, col carré, légèreté et romantisme. Spirit bohème.",
     price: "18 500 FCFA",
@@ -192,6 +206,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 14,
+    slug: "jupe-plissee-emeraude",
     name: "Jupe Plissée Émeraude",
     description: "Jupe plissée mi-longue en satin, coloris émeraude intense. Effet wet-look raffiné.",
     price: "36 000 FCFA",
@@ -206,6 +221,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 15,
+    slug: "cardigan-oversize-camel",
     name: "Cardigan Oversize Camel",
     description: "Cardigan long en maille côtelée, poches plaquées. Cocooning stylé.",
     price: "48 000 FCFA",
@@ -219,6 +235,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 16,
+    slug: "chemisier-soie-graphique",
     name: "Chemisier Soie Graphique",
     description: "Chemisier en soie à imprimé graphique, col V, manches 3/4. Luxe accessible.",
     price: "52 000 FCFA",
@@ -232,6 +249,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 17,
+    slug: "robe-longue-brodee",
     name: "Robe Longue Brodée",
     description: "Robe longue en coton brodé à la main, manches évasées. Artisanat et modernité.",
     price: "67 000 FCFA",
@@ -246,6 +264,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 18,
+    slug: "short-tailleur-ecru",
     name: "Short Tailleur Écru",
     description: "Short structuré à pince, ceinture intégrée. Esprit tailleur estival chic.",
     price: "28 000 FCFA",
@@ -259,6 +278,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 19,
+    slug: "veste-cuir-noire",
     name: "Veste En Cuir Noire",
     description: "Veste courte en cuir véritable, col mao, zip central. Attitude et style intemporel.",
     price: "115 000 FCFA",
@@ -273,6 +293,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 20,
+    slug: "ensemble-lin-sauge",
     name: "Ensemble Lin Sauge",
     description: "Ensemble coordonné blazer + pantalon en lin sauge. Tenue complète et cohérente.",
     price: "86 000 FCFA",
@@ -287,6 +308,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 21,
+    slug: "robe-asymetrique-noir",
     name: "Robe Asymétrique Noir",
     description: "Robe à ourlet asymétrique, découpe dos nu, crépe de chine. Audace et élégance.",
     price: "59 000 FCFA",
@@ -300,6 +322,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: 22,
+    slug: "pull-mohair-rose",
     name: "Pull Mohair Rose",
     description: "Pull ultra-doux en mélange mohair, maille ajourée légère. Féminité et confort.",
     price: "39 000 FCFA",
@@ -340,4 +363,21 @@ export const allColors = [
 
 export function formatFCFA(value: number): string {
   return value.toLocaleString("fr-FR") + " FCFA";
+}
+
+export function getProductBySlug(slug: string): Product | undefined {
+  return mockProducts.find((product) => product.slug === slug);
+}
+
+export function getRelatedProducts(product: Product, limit = 4): Product[] {
+  const sameCategory = mockProducts.filter(
+    (candidate) =>
+      candidate.id !== product.id && candidate.category === product.category
+  );
+  const fallback = mockProducts.filter(
+    (candidate) =>
+      candidate.id !== product.id && candidate.category !== product.category
+  );
+
+  return [...sameCategory, ...fallback].slice(0, limit);
 }

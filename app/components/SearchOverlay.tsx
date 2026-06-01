@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X, ArrowRight } from "lucide-react";
 import { useShop } from "@/app/context/ShopContext";
@@ -12,24 +12,27 @@ export default function SearchOverlay() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  const handleClose = useCallback(() => {
+    setQuery("");
+    closeSearch();
+  }, [closeSearch]);
+
   // Auto-focus input when opened
   useEffect(() => {
     if (isSearchOpen) {
       const t = setTimeout(() => inputRef.current?.focus(), 80);
       return () => clearTimeout(t);
-    } else {
-      setQuery("");
     }
   }, [isSearchOpen]);
 
   // Escape key
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeSearch();
+      if (e.key === "Escape") handleClose();
     };
     if (isSearchOpen) document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [isSearchOpen, closeSearch]);
+  }, [isSearchOpen, handleClose]);
 
   // Body scroll lock
   useEffect(() => {
@@ -54,12 +57,12 @@ export default function SearchOverlay() {
     e.preventDefault();
     if (!query.trim()) return;
     router.push(`/shop?search=${encodeURIComponent(query.trim())}`);
-    closeSearch();
+    handleClose();
   };
 
   const handleResultClick = (category: string) => {
     router.push(`/shop?category=${encodeURIComponent(category)}`);
-    closeSearch();
+    handleClose();
   };
 
   const popularSearches = ["Robes", "Vestes", "Nouveautés", "Manteaux", "Pulls"];
@@ -89,7 +92,7 @@ export default function SearchOverlay() {
         </form>
         <button
           id="search-close-btn"
-          onClick={closeSearch}
+          onClick={handleClose}
           aria-label="Fermer la recherche"
           className="p-2 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
         >
@@ -145,7 +148,7 @@ export default function SearchOverlay() {
                   key={term}
                   onClick={() => {
                     router.push(`/shop?category=${encodeURIComponent(term)}`);
-                    closeSearch();
+                    handleClose();
                   }}
                   className="border border-gray-200 text-[12px] tracking-wide px-4 py-2.5 hover:border-black hover:bg-black hover:text-white transition-all duration-200 min-h-[44px]"
                 >

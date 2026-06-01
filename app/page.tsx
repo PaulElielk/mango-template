@@ -1,5 +1,4 @@
-"use client";
-
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Header from "@/app/components/Header";
 import Sidebar from "@/app/components/Sidebar";
@@ -9,6 +8,17 @@ import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
 import SearchOverlay from "@/app/components/SearchOverlay";
 import BackToTop from "@/app/components/BackToTop";
+
+export const metadata: Metadata = {
+  title: "Accueil",
+  description:
+    "Découvrez Prototype, une boutique de mode féminine contemporaine pensée pour présenter une collection élégante, claire et mobile-friendly.",
+  openGraph: {
+    title: "Accueil | Prototype",
+    description:
+      "Mode féminine contemporaine, nouveautés et pièces essentielles dans une expérience boutique élégante.",
+  },
+};
 
 // Components using useSearchParams must be wrapped in Suspense to avoid
 // Next.js de-opting the entire page from static rendering.

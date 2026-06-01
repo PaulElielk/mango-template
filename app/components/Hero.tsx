@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Hero() {
   return (
     <section
@@ -32,13 +34,13 @@ export default function Hero() {
         <p className="text-white/70 text-[16px] tracking-widest mb-10 animate-fade-in-up-delay">
           Élégance intemporelle, style contemporain
         </p>
-        <a
+        <Link
           id="hero-cta-btn"
           href="/shop"
           className="inline-block border border-white text-white text-[11px] tracking-[0.25em] uppercase px-10 py-4 hover:bg-white hover:text-black transition-all duration-300 animate-fade-in-up-delay"
         >
           Acheter Maintenant
-        </a>
+        </Link>
       </div>
     </section>
   );

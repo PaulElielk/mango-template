@@ -165,7 +165,7 @@ html {
   }
 }
 
-/* Payment modal success icon */
+/* Order request success icon */
 @keyframes scale-in {
   from {
     transform: scale(0.4);

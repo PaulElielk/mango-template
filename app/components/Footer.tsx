@@ -1,30 +1,54 @@
+"use client";
+
+import Link from "next/link";
+import { FormEvent, useState } from "react";
+
+const columns = [
+  {
+    title: "Aide",
+    links: [
+      { label: "FAQ", href: "/faq" },
+      { label: "Contact", href: "/contact" },
+      { label: "Livraison & retours", href: "/livraison-retours" },
+      { label: "Boutique", href: "/shop" },
+    ],
+  },
+  {
+    title: "Société",
+    links: [
+      { label: "Accueil", href: "/" },
+      { label: "Politique de confidentialité", href: "/politique-confidentialite" },
+      { label: "Conditions générales", href: "/conditions-generales" },
+    ],
+  },
+];
+
+const socialLinks = ["Instagram", "TikTok", "Pinterest", "YouTube", "Facebook"];
+
 export default function Footer() {
-  const columns = [
-    {
-      title: "Aide",
-      links: [
-        "FAQ",
-        "Suivi de commande",
-        "Retours & échanges",
-        "Livraison",
-        "Contact",
-      ],
-    },
-    {
-      title: "Société",
-      links: [
-        "À propos de Prototype",
-        "Carrières",
-        "Presse",
-        "Responsabilité",
-        "Politique de confidentialité",
-      ],
-    },
-    {
-      title: "Suivez-nous",
-      links: ["Instagram", "TikTok", "Pinterest", "YouTube", "Facebook"],
-    },
-  ];
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterError, setNewsletterError] = useState("");
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+
+  function handleNewsletterSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const email = newsletterEmail.trim();
+
+    setNewsletterSubmitted(false);
+
+    if (!email) {
+      setNewsletterError("Veuillez saisir une adresse e-mail.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setNewsletterError("Veuillez saisir une adresse e-mail valide.");
+      return;
+    }
+
+    setNewsletterError("");
+    setNewsletterSubmitted(true);
+  }
 
   return (
     <footer id="footer" className="bg-white border-t border-gray-100 pt-16 pb-8 px-4 md:px-8">
@@ -45,18 +69,31 @@ export default function Footer() {
               <p className="text-[10px] tracking-[0.2em] uppercase font-medium mb-4">{col.title}</p>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
                       className="text-[12px] text-gray-500 hover:text-black transition-colors tracking-wide"
                     >
-                      {link}
-                    </a>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
+
+          <div>
+            <p className="text-[10px] tracking-[0.2em] uppercase font-medium mb-4">Suivez-nous</p>
+            <ul className="space-y-2.5">
+              {socialLinks.map((link) => (
+                <li key={link}>
+                  <span className="text-[12px] text-gray-400 tracking-wide" aria-disabled="true">
+                    {link} · Bientôt disponible
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Newsletter */}
@@ -68,20 +105,48 @@ export default function Footer() {
                 Inscrivez-vous pour recevoir nos dernières nouveautés et offres exclusives.
               </p>
             </div>
-            <div className="flex gap-0 flex-1 md:max-w-md">
-              <input
-                id="newsletter-input"
-                type="email"
-                placeholder="Votre adresse e-mail"
-                className="flex-1 border border-gray-200 px-4 py-3 text-[12px] outline-none focus:border-black transition-colors placeholder:text-gray-400"
-              />
-              <button
-                id="newsletter-btn"
-                className="bg-black text-white text-[10px] tracking-[0.2em] uppercase px-6 py-3 hover:bg-gray-900 transition-colors whitespace-nowrap"
-              >
-                S'inscrire
-              </button>
-            </div>
+            <form onSubmit={handleNewsletterSubmit} noValidate className="flex-1 md:max-w-md">
+              <div className="flex gap-0">
+                <label htmlFor="newsletter-input" className="sr-only">
+                  Adresse e-mail newsletter
+                </label>
+                <input
+                  id="newsletter-input"
+                  type="email"
+                  value={newsletterEmail}
+                  onChange={(event) => {
+                    setNewsletterEmail(event.target.value);
+                    setNewsletterError("");
+                    setNewsletterSubmitted(false);
+                  }}
+                  placeholder="Votre adresse e-mail"
+                  aria-invalid={Boolean(newsletterError)}
+                  aria-describedby={
+                    newsletterError || newsletterSubmitted ? "newsletter-feedback" : undefined
+                  }
+                  className="flex-1 border border-gray-200 px-4 py-3 text-[12px] outline-none focus:border-black transition-colors placeholder:text-gray-400"
+                />
+                <button
+                  type="submit"
+                  id="newsletter-btn"
+                  className="bg-black text-white text-[10px] tracking-[0.2em] uppercase px-6 py-3 hover:bg-gray-900 transition-colors whitespace-nowrap"
+                >
+                  S&apos;inscrire
+                </button>
+              </div>
+              {(newsletterError || newsletterSubmitted) && (
+                <p
+                  id="newsletter-feedback"
+                  className={`mt-3 text-[12px] leading-5 ${
+                    newsletterError ? "text-red-600" : "text-gray-600"
+                  }`}
+                  role={newsletterError ? "alert" : "status"}
+                >
+                  {newsletterError ||
+                    "Votre inscription a été préparée. La connexion au service newsletter sera ajoutée lors de la mise en production."}
+                </p>
+              )}
+            </form>
           </div>
         </div>
 
@@ -91,12 +156,12 @@ export default function Footer() {
             © 2025 Prototype. Tous droits réservés.
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-[11px] text-gray-400 hover:text-black transition-colors">
+            <Link href="/conditions-generales" className="text-[11px] text-gray-400 hover:text-black transition-colors">
               Mentions légales
-            </a>
-            <a href="#" className="text-[11px] text-gray-400 hover:text-black transition-colors">
-              Cookies
-            </a>
+            </Link>
+            <Link href="/politique-confidentialite" className="text-[11px] text-gray-400 hover:text-black transition-colors">
+              Confidentialité
+            </Link>
           </div>
         </div>
       </div>
