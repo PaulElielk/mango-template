@@ -32,6 +32,18 @@ export default function ProductGrid() {
   });
 
   const hasFilters = activeCategory || activeSize || activeColor || searchQuery;
+  const categoryPills = ["Nouveautés", "Jeans", "Robes", "Manteaux", "Vestes", "Pantalons", "Pulls", "Tops"];
+
+  function handleCategoryPillClick(category: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (category === "Nouveautés") {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
+    const query = params.toString();
+    router.push(query ? `/shop?${query}` : "/shop");
+  }
 
   function clearFilter(key: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -41,7 +53,31 @@ export default function ProductGrid() {
   }
 
   return (
-    <section id="produits" className="px-4 md:px-8 py-16 md:py-24">
+    <section id="produits" className="px-4 md:px-8 pt-6 pb-16 md:py-24">
+      <div className="-mx-4 md:-mx-8 mb-8 md:mb-16 overflow-x-auto hide-scrollbar border-y border-gray-100 bg-white">
+        <div className="flex items-center gap-2 px-4 md:px-8 py-3 w-max">
+          {categoryPills.map((pill) => {
+            const isActive =
+              activeCategory === pill || (pill === "Nouveautés" && !activeCategory);
+
+            return (
+              <button
+                type="button"
+                key={pill}
+                onClick={() => handleCategoryPillClick(pill)}
+                className={`px-5 py-2 text-[11px] tracking-wide rounded-full border transition-all whitespace-nowrap min-h-[44px] ${
+                  isActive
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-black border-gray-200 hover:border-black"
+                }`}
+              >
+                {pill}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Filter bar */}
       <div className="flex items-center justify-between mb-8 gap-4">
         {/* Active filter chips */}

@@ -105,3 +105,20 @@
  GET / 200 in 46ms (next.js: 5ms, application-code: 42ms)
  GET /shop 200 in 26ms (next.js: 12ms, application-code: 14ms)
  GET / 200 in 55ms (next.js: 3ms, application-code: 52ms)
+ GET /shop 200 in 252ms (next.js: 50ms, application-code: 202ms)
+ GET / 200 in 155ms (next.js: 39ms, application-code: 116ms)
+ GET / 200 in 57ms (next.js: 4ms, application-code: 53ms)
+ GET / 200 in 61ms (next.js: 4ms, application-code: 57ms)
+ GET /shop 200 in 30ms (next.js: 6ms, application-code: 24ms)
+✓ Compiled in 146ms
+ GET /shop 200 in 231ms (next.js: 187ms, application-code: 45ms)
+ GET /shop 200 in 241ms (next.js: 3ms, application-code: 238ms)
+✓ Compiled in 31ms
+✓ Compiled in 54ms
+ GET /shop 200 in 218ms (next.js: 145ms, application-code: 73ms)
+ GET /shop 200 in 31ms (next.js: 4ms, application-code: 28ms)
+ GET /shop 200 in 219ms (next.js: 4ms, application-code: 215ms)
+✓ Compiled in 52ms
+ GET /shop 200 in 138ms (next.js: 101ms, application-code: 37ms)
+ GET /shop 200 in 178ms (next.js: 3ms, application-code: 175ms)
+ GET /shop 200 in 60ms (next.js: 3ms, application-code: 57ms)
