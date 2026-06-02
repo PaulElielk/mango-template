@@ -7,7 +7,7 @@ import { categories } from "@/app/data/products";
 import { useShop } from "@/app/context/ShopContext";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const collectionLinks = ["Été 2025", "Édition Limitée", "Capsule Urbaine", "Weekend Chic"];
+const collectionLinks = ["Collection été", "Édition Limitée", "Capsule Urbaine", "Weekend Chic"];
 
 export default function Sidebar() {
   const { isMenuOpen, closeMenu } = useShop();
@@ -65,6 +65,7 @@ export default function Sidebar() {
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <span className="logo-text text-base font-semibold tracking-[0.3em] uppercase">Prototype</span>
           <button
+            type="button"
             id="sidebar-close-btn"
             onClick={closeMenu}
             className="p-2 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -85,6 +86,7 @@ export default function Sidebar() {
               {categories.map((link) => (
                 <li key={link}>
                   <button
+                    type="button"
                     onClick={() => handleCategoryClick(link)}
                     className="w-full flex items-center justify-between px-6 py-3.5 text-[13px] tracking-wide hover:bg-gray-50 transition-colors text-left min-h-[52px]"
                   >
@@ -105,6 +107,7 @@ export default function Sidebar() {
               {collectionLinks.map((link) => (
                 <li key={link}>
                   <button
+                    type="button"
                     onClick={() => {
                       router.push(`/shop?search=${encodeURIComponent(link)}`);
                       closeMenu();

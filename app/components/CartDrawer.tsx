@@ -121,7 +121,12 @@ function OrderRequestModal({
         onClick={isConfirmed ? undefined : onClose}
       />
 
-      <div className="relative bg-white w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl z-10 flex flex-col">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="order-request-title"
+        className="relative bg-white w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl z-10 flex flex-col"
+      >
         {isConfirmed ? (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
             <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center mb-6 animate-[scale-in_0.4s_ease]">
@@ -130,7 +135,9 @@ function OrderRequestModal({
             <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 mb-3">
               Demande préparée
             </p>
-            <h3 className="text-lg font-medium tracking-wide mb-2">{orderReference}</h3>
+            <h3 id="order-request-title" className="text-lg font-medium tracking-wide mb-2">
+              {orderReference}
+            </h3>
             <p className="text-[13px] text-gray-500 leading-6 max-w-md">
               Votre demande de commande a été préparée. La connexion à l’envoi réel sera ajoutée lors de la mise en production.
             </p>
@@ -149,7 +156,10 @@ function OrderRequestModal({
                 <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 mb-1">
                   Prototype
                 </p>
-                <h3 className="text-[13px] font-semibold tracking-[0.1em] uppercase">
+                <h3
+                  id="order-request-title"
+                  className="text-[13px] font-semibold tracking-[0.1em] uppercase"
+                >
                   Demande de commande
                 </h3>
               </div>
@@ -163,7 +173,7 @@ function OrderRequestModal({
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} noValidate className="overflow-y-auto">
+            <form onSubmit={handleSubmit} noValidate className="min-h-0 overflow-y-auto">
               <div className="px-5 sm:px-6 py-5 border-b border-gray-100">
                 <p className="text-[12px] leading-6 text-gray-500">
                   Cette commande sera envoyée comme une demande. Le paiement réel sera confirmé après contact avec la boutique.
@@ -580,7 +590,7 @@ export default function CartDrawer() {
             <span className="font-semibold">{formatFCFA(cartTotal)}</span>
           </div>
           <p className="text-[10px] text-gray-400 tracking-wide">
-            Livraison gratuite à partir de 50 000 FCFA
+            Livraison à confirmer avec la boutique
           </p>
           <button
             type="button"

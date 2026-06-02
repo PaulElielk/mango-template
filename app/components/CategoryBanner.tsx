@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function CategoryBanner() {
   const items = [
     {
@@ -30,7 +32,7 @@ export default function CategoryBanner() {
     <section id="categories" className="px-4 md:px-8 pb-12">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {items.map((item) => (
-          <a
+          <Link
             key={item.label}
             href={item.href}
             className={`relative flex flex-col justify-end p-8 h-64 md:h-80 ${item.bg} group overflow-hidden`}
@@ -72,7 +74,7 @@ export default function CategoryBanner() {
               Découvrir
             </span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>

@@ -81,6 +81,7 @@ export default function FilterSheet() {
           <div className="flex items-center gap-3">
             {hasFilters && (
               <button
+                type="button"
                 onClick={clearFilters}
                 className="text-[11px] tracking-wide text-gray-500 underline hover:text-black transition-colors"
               >
@@ -88,6 +89,7 @@ export default function FilterSheet() {
               </button>
             )}
             <button
+              type="button"
               onClick={closeFilter}
               aria-label="Fermer les filtres"
               className="p-2 hover:opacity-60 transition-opacity min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -106,6 +108,7 @@ export default function FilterSheet() {
             <div className="flex flex-wrap gap-2">
               {categories.filter(c => c !== "Accessoires" && c !== "Soldes").map((cat) => (
                 <button
+                  type="button"
                   key={cat}
                   onClick={() => setParam("category", cat)}
                   className={`px-4 py-2.5 text-[12px] tracking-wide border transition-all min-h-[44px] ${
@@ -126,6 +129,7 @@ export default function FilterSheet() {
             <div className="flex flex-wrap gap-2">
               {allSizes.map((sz) => (
                 <button
+                  type="button"
                   key={sz}
                   onClick={() => setParam("size", sz)}
                   className={`w-12 h-12 flex items-center justify-center text-[12px] font-medium border transition-all ${
@@ -146,6 +150,7 @@ export default function FilterSheet() {
             <div className="flex flex-wrap gap-2">
               {allColors.map((col) => (
                 <button
+                  type="button"
                   key={col}
                   onClick={() => setParam("color", col)}
                   className={`px-4 py-2.5 text-[12px] tracking-wide border transition-all min-h-[44px] ${
@@ -164,6 +169,7 @@ export default function FilterSheet() {
         {/* Apply button */}
         <div className="shrink-0 px-5 py-5 border-t border-gray-100">
           <button
+            type="button"
             id="apply-filters-btn"
             onClick={closeFilter}
             className="w-full bg-black text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-gray-900 transition-colors min-h-[52px]"

@@ -153,7 +153,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-6 border-t border-gray-100">
           <p className="text-[11px] text-gray-400">
-            © 2025 Prototype. Tous droits réservés.
+            © 2026 Prototype. Tous droits réservés.
           </p>
           <div className="flex gap-6">
             <Link href="/conditions-generales" className="text-[11px] text-gray-400 hover:text-black transition-colors">

@@ -50,7 +50,7 @@ export default function Header() {
       <div className="bg-black text-white text-[10px] tracking-[0.2em] uppercase py-2 overflow-hidden">
         <div className="flex whitespace-nowrap">
           <span className="promo-text inline-block">
-            &nbsp;&nbsp;&nbsp;Livraison gratuite dès 50 000 FCFA &nbsp;·&nbsp; Nouveautés chaque semaine &nbsp;·&nbsp; Retours gratuits sous 30 jours &nbsp;·&nbsp; Service client disponible 7j/7 &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;Livraison à confirmer avant lancement &nbsp;·&nbsp; Nouveautés chaque semaine &nbsp;·&nbsp; Retours à confirmer &nbsp;·&nbsp; Service client en préparation &nbsp;&nbsp;&nbsp;
           </span>
         </div>
       </div>

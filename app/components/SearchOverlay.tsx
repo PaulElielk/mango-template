@@ -60,8 +60,8 @@ export default function SearchOverlay() {
     handleClose();
   };
 
-  const handleResultClick = (category: string) => {
-    router.push(`/shop?category=${encodeURIComponent(category)}`);
+  const handleResultClick = (slug: string) => {
+    router.push(`/shop/${slug}`);
     handleClose();
   };
 
@@ -80,6 +80,9 @@ export default function SearchOverlay() {
       <div className="flex items-center gap-4 px-4 md:px-8 h-16 border-b border-gray-100">
         <Search size={18} strokeWidth={1.5} className="text-gray-400 shrink-0" />
         <form onSubmit={handleSubmit} className="flex-1">
+          <label htmlFor="search-input" className="sr-only">
+            Rechercher dans la boutique
+          </label>
           <input
             ref={inputRef}
             id="search-input"
@@ -91,6 +94,7 @@ export default function SearchOverlay() {
           />
         </form>
         <button
+          type="button"
           id="search-close-btn"
           onClick={handleClose}
           aria-label="Fermer la recherche"
@@ -112,7 +116,8 @@ export default function SearchOverlay() {
               {results.map((p) => (
                 <li key={p.id}>
                   <button
-                    onClick={() => handleResultClick(p.category)}
+                    type="button"
+                    onClick={() => handleResultClick(p.slug)}
                     className="w-full flex items-center justify-between py-3 px-2 hover:bg-gray-50 transition-colors text-left group min-h-[52px]"
                   >
                     <div>
@@ -145,6 +150,7 @@ export default function SearchOverlay() {
             <div className="flex flex-wrap gap-2">
               {popularSearches.map((term) => (
                 <button
+                  type="button"
                   key={term}
                   onClick={() => {
                     router.push(`/shop?category=${encodeURIComponent(term)}`);

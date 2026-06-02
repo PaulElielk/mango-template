@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import { mockProducts } from "@/app/data/products";
@@ -47,6 +48,7 @@ export default function ProductGrid() {
         <div className="flex items-center gap-2 flex-wrap flex-1">
           {activeCategory && (
             <button
+              type="button"
               onClick={() => clearFilter("category")}
               className="flex items-center gap-1.5 border border-black text-[11px] tracking-wide px-3 py-1.5 hover:bg-black hover:text-white transition-all min-h-[36px]"
             >
@@ -56,6 +58,7 @@ export default function ProductGrid() {
           )}
           {activeSize && (
             <button
+              type="button"
               onClick={() => clearFilter("size")}
               className="flex items-center gap-1.5 border border-black text-[11px] tracking-wide px-3 py-1.5 hover:bg-black hover:text-white transition-all min-h-[36px]"
             >
@@ -65,6 +68,7 @@ export default function ProductGrid() {
           )}
           {activeColor && (
             <button
+              type="button"
               onClick={() => clearFilter("color")}
               className="flex items-center gap-1.5 border border-black text-[11px] tracking-wide px-3 py-1.5 hover:bg-black hover:text-white transition-all min-h-[36px]"
             >
@@ -74,6 +78,7 @@ export default function ProductGrid() {
           )}
           {searchQuery && (
             <button
+              type="button"
               onClick={() => clearFilter("search")}
               className="flex items-center gap-1.5 border border-black text-[11px] tracking-wide px-3 py-1.5 hover:bg-black hover:text-white transition-all min-h-[36px]"
             >
@@ -89,6 +94,7 @@ export default function ProductGrid() {
             {filtered.length} article{filtered.length !== 1 ? "s" : ""}
           </span>
           <button
+            type="button"
             id="filter-open-btn"
             onClick={openFilter}
             className="flex items-center gap-2 border border-gray-300 text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:border-black transition-colors min-h-[44px] min-w-[44px]"
@@ -116,6 +122,7 @@ export default function ProductGrid() {
           </p>
           {hasFilters && (
             <button
+              type="button"
               onClick={() => router.push("/shop")}
               className="border border-black text-black text-[11px] tracking-[0.2em] uppercase px-8 py-3 hover:bg-black hover:text-white transition-all duration-300 min-h-[44px]"
             >
@@ -128,12 +135,13 @@ export default function ProductGrid() {
       {/* View all button — only when not filtered */}
       {!hasFilters && filtered.length > 0 && (
         <div className="flex justify-center mt-16">
-          <button
+          <Link
             id="voir-tout-btn"
-            className="border border-black text-black text-[11px] tracking-[0.25em] uppercase px-12 py-4 hover:bg-black hover:text-white transition-all duration-300 min-h-[52px]"
+            href="/shop"
+            className="inline-flex items-center justify-center border border-black text-black text-[11px] tracking-[0.25em] uppercase px-12 py-4 hover:bg-black hover:text-white transition-all duration-300 min-h-[52px]"
           >
             Voir tout
-          </button>
+          </Link>
         </div>
       )}
     </section>

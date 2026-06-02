@@ -34,6 +34,7 @@ function CategoryPills() {
           const isActive = activeCategory === pill || (pill === "Nouveautés" && !activeCategory);
           return (
             <button
+              type="button"
               key={pill}
               onClick={() => handlePillClick(pill)}
               className={`px-5 py-2 text-[11px] tracking-wide rounded-full border transition-all whitespace-nowrap min-h-[44px] ${
@@ -60,6 +61,7 @@ export default function ShopPageClient() {
       <Sidebar />
 
       <main className="pt-14">
+        <h1 className="sr-only">Boutique</h1>
         <CategoryPills />
         <ProductGrid />
         <FilterSheet />

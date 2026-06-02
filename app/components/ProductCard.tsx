@@ -62,9 +62,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </Link>
 
-        {/* Quick add overlay — slides up on hover */}
+        {/* Quick add overlay — visible on touch screens, slides up on larger hover devices */}
         {!isOutOfStock && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
+          <div className="absolute bottom-0 left-0 right-0 z-10 translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
             <button
               type="button"
               id={`ajouter-btn-${product.id}`}

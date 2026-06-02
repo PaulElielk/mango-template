@@ -16,6 +16,7 @@ export default function BackToTop() {
 
   return (
     <button
+      type="button"
       id="back-to-top-btn"
       onClick={scrollToTop}
       aria-label="Retour en haut"

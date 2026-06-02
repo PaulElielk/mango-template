@@ -29,7 +29,7 @@ export default function Hero() {
           className="text-white text-3xl md:text-5xl lg:text-6xl font-light tracking-wide text-center mb-2 animate-fade-in-up"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          Printemps — Été 2025
+          Printemps — Été
         </h1>
         <p className="text-white/70 text-[16px] tracking-widest mb-10 animate-fade-in-up-delay">
           Élégance intemporelle, style contemporain
@@ -39,7 +39,7 @@ export default function Hero() {
           href="/shop"
           className="inline-block border border-white text-white text-[11px] tracking-[0.25em] uppercase px-10 py-4 hover:bg-white hover:text-black transition-all duration-300 animate-fade-in-up-delay"
         >
-          Acheter Maintenant
+          Acheter maintenant
         </Link>
       </div>
     </section>

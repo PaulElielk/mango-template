@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mango Store
 
-## Getting Started
+Prototype frontend de boutique e-commerce mode, construit avec Next.js, React, TypeScript et Tailwind CSS.
 
-First, run the development server:
+## Current Prototype Status
+
+- Prototype frontend-only en français.
+- Catalogue produit local dans `app/data/products.ts`.
+- Panier global avec persistance `localStorage`.
+- Pages boutique, détail produit, contact, FAQ, livraison/retours, confidentialité et conditions générales.
+- Demande de commande simulée côté client, sans envoi réel.
+- Aucun backend, aucune authentification, aucun paiement réel et aucun envoi e-mail réel pour le moment.
+
+## Commandes
+
+Sur Windows PowerShell, utiliser les commandes `.cmd`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm.cmd run dev
+npm.cmd run lint
+npm.cmd run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Avant une mise en production, prévoir la configuration de `NEXT_PUBLIC_SITE_URL`, l’intégration des services réels retenus et la validation des textes légaux par le client ou un conseil compétent.

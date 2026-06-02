@@ -10,7 +10,7 @@ import SearchOverlay from "@/app/components/SearchOverlay";
 import BackToTop from "@/app/components/BackToTop";
 
 export const metadata: Metadata = {
-  title: "Accueil",
+  title: "Prototype | Mode féminine",
   description:
     "Découvrez Prototype, une boutique de mode féminine contemporaine pensée pour présenter une collection élégante, claire et mobile-friendly.",
   openGraph: {
