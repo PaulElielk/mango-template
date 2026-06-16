@@ -1,19 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, User, ShoppingBag, Menu } from "lucide-react";
-import { categories } from "@/app/data/products";
+import { brandConfig } from "@/app/data/brand";
 import { useShop } from "@/app/context/ShopContext";
-import { useRouter, useSearchParams } from "next/navigation";
+
+const navLinks = [
+  { label: "Nouveautés", href: "/shop" },
+  { label: "Chemises", href: "/shop?search=Chemises" },
+  { label: "Surchemises", href: "/shop?search=Surchemises" },
+  { label: "Pantalons", href: "/shop?category=Pantalons" },
+  { label: "Accessoires", href: "/shop?search=Accessoires" },
+];
 
 export default function Header() {
   const { cartCount, openCart, openMenu, openSearch } = useShop();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showAccountNotice, setShowAccountNotice] = useState(false);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const activeCategory = searchParams.get("category") ?? "Nouveautés";
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -28,16 +32,6 @@ export default function Header() {
     return () => window.clearTimeout(timeout);
   }, [showAccountNotice]);
 
-  function handleCategoryClick(cat: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (cat === "Nouveautés") {
-      params.delete("category");
-    } else {
-      params.set("category", cat);
-    }
-    router.push(`/shop?${params.toString()}`);
-  }
-
   return (
     <header
       className={`absolute md:fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
@@ -46,19 +40,16 @@ export default function Header() {
           : "bg-transparent"
       }`}
     >
-      {/* Promo banner */}
       <div className="bg-black text-white text-[10px] tracking-[0.2em] uppercase py-2 overflow-hidden">
         <div className="flex whitespace-nowrap">
           <span className="promo-text inline-block">
-            &nbsp;&nbsp;&nbsp;Livraison à confirmer avant lancement &nbsp;·&nbsp; Nouveautés chaque semaine &nbsp;·&nbsp; Retours à confirmer &nbsp;·&nbsp; Service client en préparation &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;Mode premium masculine à Abidjan &nbsp;·&nbsp; Nouveautés chaque semaine &nbsp;·&nbsp; Livraison à confirmer avec la boutique &nbsp;·&nbsp; Service client disponible &nbsp;&nbsp;&nbsp;
           </span>
         </div>
       </div>
 
-      {/* Main nav row */}
       <div className="flex items-center justify-between px-4 md:px-8 h-14">
-        {/* Left: Hamburger (mobile) / Desktop nav */}
-        <div className="flex items-center gap-4 w-1/3">
+        <div className="flex items-center gap-4 w-1/4 md:w-1/3">
           <button
             type="button"
             id="hamburger-btn"
@@ -69,37 +60,29 @@ export default function Header() {
             <Menu size={20} strokeWidth={1.5} />
           </button>
 
-          {/* Desktop nav links */}
-          <nav className="hidden md:flex items-center gap-6">
-            {categories.slice(0, 5).map((cat) => (
-              <button
-                type="button"
-                key={cat}
-                onClick={() => handleCategoryClick(cat)}
-                className={`nav-link text-[11px] uppercase tracking-[0.12em] font-medium transition-opacity ${
-                  activeCategory === cat || (cat === "Nouveautés" && !searchParams.get("category"))
-                    ? "opacity-100"
-                    : "opacity-60 hover:opacity-100"
-                }`}
+          <nav className="hidden md:flex items-center gap-6" aria-label="Navigation principale">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="nav-link text-[11px] uppercase tracking-[0.12em] font-medium opacity-70 hover:opacity-100 transition-opacity"
               >
-                {cat}
-              </button>
+                {link.label}
+              </Link>
             ))}
           </nav>
         </div>
 
-        {/* Center: Logo */}
-        <div className="flex justify-center w-1/3">
+        <div className="flex justify-center w-1/2 md:w-1/3">
           <Link
             href="/"
-            className="logo-text text-xl font-semibold tracking-[0.3em] uppercase select-none"
+            className="logo-text whitespace-nowrap text-[9px] font-semibold tracking-[0.1em] uppercase select-none sm:text-[11px] sm:tracking-[0.16em] md:text-sm lg:text-base lg:tracking-[0.22em]"
           >
-            Prototype
+            {brandConfig.brand.name}
           </Link>
         </div>
 
-        {/* Right: Icons */}
-        <div className="flex items-center justify-end gap-1 md:gap-3 w-1/3">
+        <div className="flex items-center justify-end gap-1 md:gap-3 w-1/4 md:w-1/3">
           <button
             type="button"
             id="search-btn"

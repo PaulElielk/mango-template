@@ -1,13 +1,14 @@
-# Mango Store
+# SB LUXURY CASUAL Storefront
 
-Prototype frontend de boutique e-commerce mode, construit avec Next.js, React, TypeScript et Tailwind CSS.
+Version frontend de boutique e-commerce mode, construite avec Next.js, React, TypeScript et Tailwind CSS.
 
-## Current Prototype Status
+## Statut actuel
 
-- Prototype frontend-only en français.
-- Catalogue produit local dans `app/data/products.ts`.
+- Client actuel : `SB LUXURY CASUAL`.
+- Version frontend-only en français.
+- Identité de marque, contact, livraison, paiement, FAQ et contenus d’aide intégrés.
+- Catalogue produit local dans `app/data/products.ts`, encore en attente du catalogue réel définitif.
 - Panier global avec persistance `localStorage`.
-- Pages boutique, détail produit, contact, FAQ, livraison/retours, confidentialité et conditions générales.
 - Demande de commande simulée côté client, sans envoi réel.
 - Aucun backend, aucune authentification, aucun paiement réel et aucun envoi e-mail réel pour le moment.
 
@@ -21,4 +22,4 @@ npm.cmd run lint
 npm.cmd run build
 ```
 
-Avant une mise en production, prévoir la configuration de `NEXT_PUBLIC_SITE_URL`, l’intégration des services réels retenus et la validation des textes légaux par le client ou un conseil compétent.
+Avant une mise en production, prévoir la configuration de `NEXT_PUBLIC_SITE_URL`, l’intégration des services réels retenus, le catalogue produit final et la validation des textes légaux par le client ou un conseil compétent.

@@ -1,54 +1,88 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import PageShell from "@/app/components/PageShell";
+import { brandConfig } from "@/app/data/brand";
 
 const faqs = [
   {
     question: "Comment passer une commande ?",
     answer:
-      "Ajoutez les articles souhaités au panier, choisissez les variantes disponibles, puis préparez une demande de commande. L’envoi réel sera connecté lors de la mise en production.",
+      "Vous pouvez commander directement via WhatsApp, Facebook, Instagram ou en visitant notre boutique.",
   },
   {
-    question: "Les paiements sont-ils déjà activés ?",
+    question: "Quels sont les modes de paiement acceptés ?",
     answer:
-      "Non. La boutique prépare uniquement une demande de commande. Le paiement réel sera confirmé après contact avec la boutique lors de la version de production.",
+      "Nous acceptons Orange Money, Wave et le paiement à la livraison selon la zone.",
   },
   {
-    question: "Quels moyens de paiement seront disponibles ?",
+    question: "Livrez-vous partout en Côte d’Ivoire ?",
     answer:
-      "La maquette prévoit carte bancaire et solutions de mobile money. La liste finale dépendra des prestataires activés avant lancement.",
+      "Oui, nous livrons à Abidjan ainsi que dans les principales villes de Côte d’Ivoire.",
+  },
+  {
+    question: "Quels sont les délais de livraison ?",
+    answer:
+      "À Abidjan, la livraison prend généralement 24 à 48 heures ouvrables. À l’intérieur du pays, les délais sont généralement de 2 à 5 jours ouvrables. Pour l’international, les délais varient selon la destination et le transporteur.",
+  },
+  {
+    question: "Quels sont les frais de livraison ?",
+    answer:
+      "Les frais de livraison varient selon la localité et sont communiqués avant la validation de la commande.",
+  },
+  {
+    question: "Puis-je échanger un article ?",
+    answer:
+      "Oui, sous réserve que l’article soit retourné dans son état d’origine, non porté et non endommagé.",
+  },
+  {
+    question: "Puis-je me faire rembourser ?",
+    answer:
+      "Les remboursements sont étudiés au cas par cas. Les articles personnalisés ou portés ne sont ni repris ni remboursés.",
+  },
+  {
+    question: "Comment choisir ma taille ?",
+    answer:
+      "Notre équipe est disponible pour vous conseiller. Vous pouvez également consulter le guide des tailles avant de commander.",
+  },
+  {
+    question: "Les couleurs des articles sont-elles identiques aux photos ?",
+    answer:
+      "Nous nous efforçons de présenter les produits le plus fidèlement possible. De légères variations peuvent exister selon l’éclairage ou l’écran utilisé.",
   },
   {
     question: "Comment suivre ma commande ?",
     answer:
-      "Le suivi de commande sera défini avec le futur système de gestion des commandes et de livraison.",
+      "Après confirmation de votre commande, notre équipe vous informe de l’état de préparation et de l’expédition de votre colis.",
   },
   {
-    question: "Puis-je modifier ou annuler une commande ?",
+    question: "Proposez-vous des créations personnalisées ?",
     answer:
-      "Les règles de modification et d’annulation devront être précisées dans les conditions finales de vente avant la mise en ligne.",
+      "Oui. Certaines chemises, surchemises et pièces exclusives peuvent être personnalisées selon les options disponibles.",
+  },
+  {
+    question: "Où se trouve votre boutique ?",
+    answer: "SB LUXURY CASUAL est située à Cocody Riviera Faya, à Abidjan.",
   },
   {
     question: "Comment contacter le service client ?",
     answer:
-      "La page Contact permet de préparer une demande. Le service d’envoi réel sera ajouté lors de la mise en production.",
+      "Vous pouvez nous contacter via WhatsApp au 0759207059, Facebook, Instagram ou directement en boutique.",
   },
   {
-    question: "Les articles affichés sont-ils disponibles ?",
+    question: "Vos articles sont-ils disponibles en plusieurs tailles ?",
     answer:
-      "Les articles visibles appartiennent au catalogue de démonstration. Les statuts de stock devront être reliés à l’inventaire réel avant lancement.",
+      "Oui, nos collections sont généralement proposées du M au XL selon les modèles.",
   },
   {
-    question: "Comment fonctionnent les tailles ?",
+    question: "Que faire si je reçois un article endommagé ?",
     answer:
-      "Les tailles affichées sont indicatives pour la maquette. Un guide des tailles final pourra être ajouté selon les produits réellement vendus.",
+      "Contactez notre service client dans les 24 heures suivant la réception avec des photos du produit concerné afin que nous puissions vous assister rapidement.",
   },
 ];
 
 export const metadata: Metadata = {
   title: "FAQ",
-  description:
-    "Questions fréquentes sur la boutique Prototype, les demandes de commande, les paiements à confirmer, la livraison et le service client.",
+  description: `Questions fréquentes sur ${brandConfig.brand.name}, les commandes, les paiements, la livraison, les échanges et le service client.`,
 };
 
 export default function FaqPage() {

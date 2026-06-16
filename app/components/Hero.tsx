@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { brandConfig } from "@/app/data/brand";
 
 export default function Hero() {
   return (
@@ -12,8 +13,8 @@ export default function Hero() {
       <div className="absolute inset-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/hero.png"
-          alt="Nouvelle collection Prototype"
+          src={brandConfig.assets.hero.src}
+          alt={`Nouvelle collection ${brandConfig.brand.name}`}
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
         {/* Gradient overlay — lighter at top, darker at bottom for CTA legibility */}
@@ -21,26 +22,34 @@ export default function Hero() {
       </div>
 
       {/* Content — centered bottom */}
-      <div className="relative z-10 w-full flex flex-col items-center pb-16 md:pb-24 animate-fade-in-up">
+      <div className="relative z-10 w-full flex flex-col items-center px-4 pb-16 text-center md:pb-24 animate-fade-in-up">
         <p className="text-white/80 text-[11px] tracking-[0.4em] uppercase mb-4 animate-fade-in-up">
-          Nouvelle Collection
+          {brandConfig.brand.name}
         </p>
         <h1
-          className="text-white text-3xl md:text-5xl lg:text-6xl font-light tracking-wide text-center mb-2 animate-fade-in-up"
+          className="text-white text-3xl md:text-5xl lg:text-6xl font-light tracking-wide text-center mb-3 animate-fade-in-up"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          Printemps — Été
+          {brandConfig.brand.slogan}
         </h1>
-        <p className="text-white/70 text-[16px] tracking-widest mb-10 animate-fade-in-up-delay">
-          Élégance intemporelle, style contemporain
+        <p className="max-w-2xl text-white/75 text-[14px] md:text-[16px] leading-7 tracking-wide mb-8 animate-fade-in-up-delay">
+          {brandConfig.brand.shortDescription}
         </p>
-        <Link
-          id="hero-cta-btn"
-          href="/shop"
-          className="inline-block border border-white text-white text-[11px] tracking-[0.25em] uppercase px-10 py-4 hover:bg-white hover:text-black transition-all duration-300 animate-fade-in-up-delay"
-        >
-          Acheter maintenant
-        </Link>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            id="hero-cta-btn"
+            href="/shop"
+            className="inline-block border border-white text-white text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:bg-white hover:text-black transition-all duration-300 animate-fade-in-up-delay"
+          >
+            Découvrir la collection
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-block border border-white/40 bg-white text-black text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:bg-transparent hover:text-white transition-all duration-300 animate-fade-in-up-delay"
+          >
+            Nous contacter
+          </Link>
+        </div>
       </div>
     </section>
   );

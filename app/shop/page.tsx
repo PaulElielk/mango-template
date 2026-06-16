@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ShopPageClient from "./ShopPageClient";
+import { brandConfig } from "@/app/data/brand";
 
 export const metadata: Metadata = {
   title: "Boutique",
   description:
-    "Parcourez la boutique Prototype: vêtements féminins, robes, vestes, manteaux, accessoires, nouveautés et pièces essentielles.",
+    "Parcourez la boutique SB LUXURY CASUAL: mode premium masculine, pièces raffinées, nouveautés et essentiels de style.",
   openGraph: {
-    title: "Boutique | Prototype",
+    title: `Boutique | ${brandConfig.brand.name}`,
     description:
-      "Collection de mode féminine Prototype avec filtres par catégorie, taille, couleur et recherche.",
+      "Collection SB LUXURY CASUAL avec filtres par catégorie, taille, couleur et recherche.",
+    images: [
+      {
+        url: brandConfig.assets.hero.src,
+        alt: brandConfig.brand.name,
+      },
+    ],
   },
 };
 

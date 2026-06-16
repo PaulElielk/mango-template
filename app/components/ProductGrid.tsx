@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import { mockProducts } from "@/app/data/products";
 import ProductCard from "./ProductCard";
 import { useShop } from "@/app/context/ShopContext";
-import { useRouter } from "next/navigation";
 
 export default function ProductGrid() {
   const searchParams = useSearchParams();
@@ -18,21 +17,27 @@ export default function ProductGrid() {
   const activeColor = searchParams.get("color") ?? "";
   const searchQuery = searchParams.get("search") ?? "";
 
-  // ── Filtering ────────────────────────────────────────────────────────────────
   const filtered = mockProducts.filter((p) => {
     if (activeCategory && activeCategory !== "Nouveautés") {
       if (p.category !== activeCategory) return false;
     }
     if (activeCategory === "Nouveautés" && !p.isNew) return false;
     if (activeSize && !p.sizes.includes(activeSize)) return false;
-    if (activeColor && !p.colors.some((c) => c.toLowerCase().includes(activeColor.toLowerCase()))) return false;
-    if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !p.category.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (activeColor && !p.colors.some((c) => c.toLowerCase().includes(activeColor.toLowerCase()))) {
+      return false;
+    }
+    if (
+      searchQuery &&
+      !p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !p.category.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return false;
+    }
     return true;
   });
 
   const hasFilters = activeCategory || activeSize || activeColor || searchQuery;
-  const categoryPills = ["Nouveautés", "Jeans", "Robes", "Manteaux", "Vestes", "Pantalons", "Pulls", "Tops"];
+  const categoryPills = ["Nouveautés", "Jeans", "Manteaux", "Vestes", "Pantalons", "Pulls", "Tops"];
 
   function handleCategoryPillClick(category: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -78,9 +83,7 @@ export default function ProductGrid() {
         </div>
       </div>
 
-      {/* Filter bar */}
       <div className="flex items-center justify-between mb-8 gap-4">
-        {/* Active filter chips */}
         <div className="flex items-center gap-2 flex-wrap flex-1">
           {activeCategory && (
             <button
@@ -124,7 +127,6 @@ export default function ProductGrid() {
           )}
         </div>
 
-        {/* Right: result count + filter button */}
         <div className="flex items-center gap-3 shrink-0">
           <span className="text-[11px] text-gray-400 hidden sm:block">
             {filtered.length} article{filtered.length !== 1 ? "s" : ""}
@@ -141,14 +143,10 @@ export default function ProductGrid() {
         </div>
       </div>
 
-      {/* Grid — strict 2-column mobile, scale up on desktop */}
       {filtered.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-4 gap-y-8 md:gap-y-10">
           {filtered.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
@@ -168,7 +166,6 @@ export default function ProductGrid() {
         </div>
       )}
 
-      {/* View all button — only when not filtered */}
       {!hasFilters && filtered.length > 0 && (
         <div className="flex justify-center mt-16">
           <Link

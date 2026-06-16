@@ -6,6 +6,7 @@ import {
   getRelatedProducts,
   mockProducts,
 } from "@/app/data/products";
+import { brandConfig } from "@/app/data/brand";
 import ProductDetailClient from "./ProductDetailClient";
 
 type ProductPageProps = {
@@ -28,7 +29,7 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Produit introuvable | Prototype",
+      title: "Produit introuvable",
     };
   }
 
@@ -36,7 +37,7 @@ export async function generateMetadata({
     title: product.name,
     description: product.description,
     openGraph: {
-      title: `${product.name} | Prototype`,
+      title: `${product.name} | ${brandConfig.brand.name}`,
       description: product.description,
       images: [
         {
@@ -47,7 +48,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | Prototype`,
+      title: `${product.name} | ${brandConfig.brand.name}`,
       description: product.description,
       images: [product.image],
     },

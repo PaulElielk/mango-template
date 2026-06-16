@@ -3,39 +3,59 @@ import Link from "next/link";
 export default function CategoryBanner() {
   const items = [
     {
-      label: "Vestes & Manteaux",
-      sub: "Coupes impeccables",
+      label: "Chemises",
+      sub: "Lignes nettes",
       bg: "bg-gray-100",
       image: "/cat_vestes.png",
-      href: "/shop?search=Vestes",
+      href: "/shop?search=Chemises",
       dark: true,
     },
     {
-      label: "Robes",
-      sub: "Fluidité et élégance",
+      label: "Surchemises",
+      sub: "Élégance décontractée",
       bg: "bg-stone-100",
       image: "/cat_robes.png",
-      href: "/shop?category=Robes",
+      href: "/shop?search=Surchemises",
       dark: true,
     },
     {
-      label: "Accessoires",
-      sub: "Les détails qui font tout",
+      label: "Pantalons",
+      sub: "Coupes affirmées",
       bg: "bg-zinc-900",
       image: "/cat_accessoires.png",
       dark: true,
-      href: "/shop?category=Accessoires",
+      href: "/shop?search=Pantalons",
     },
   ];
 
   return (
     <section id="categories" className="px-4 md:px-8 pb-12">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-gray-400">
+            Sélection
+          </p>
+          <h2
+            className="text-2xl font-light tracking-wide md:text-3xl"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Nouveautés et essentiels
+          </h2>
+        </div>
+        <Link
+          href="/shop"
+          className="w-fit text-[10px] uppercase tracking-[0.22em] text-gray-500 border-b border-gray-300 pb-1 hover:text-black hover:border-black transition-colors"
+        >
+          Voir la boutique
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {items.map((item) => (
           <Link
             key={item.label}
             href={item.href}
-            className={`relative flex flex-col justify-end p-8 h-64 md:h-80 ${item.bg} group overflow-hidden`}
+            className={`relative flex h-64 flex-col justify-end overflow-hidden p-8 md:h-80 ${item.bg} group`}
           >
             {item.image && (
               <>
@@ -43,36 +63,36 @@ export default function CategoryBanner() {
                 <img
                   src={item.image}
                   alt={item.label}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
               </>
             )}
             <div className="relative z-10">
-            <p
-              className={`text-[10px] tracking-[0.25em] uppercase mb-2 ${
-                item.dark ? "text-white/60" : "text-black/50"
-              }`}
-            >
-              {item.sub}
-            </p>
-            <h3
-              className={`text-xl font-light tracking-wide ${
-                item.dark ? "text-white" : "text-black"
-              }`}
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              {item.label}
-            </h3>
-            <span
-              className={`mt-3 text-[10px] tracking-[0.2em] uppercase border-b pb-px w-fit transition-colors ${
-                item.dark
-                  ? "text-white border-white/50 group-hover:border-white"
-                  : "text-black border-black/40 group-hover:border-black"
-              }`}
-            >
-              Découvrir
-            </span>
+              <p
+                className={`mb-2 text-[10px] uppercase tracking-[0.25em] ${
+                  item.dark ? "text-white/60" : "text-black/50"
+                }`}
+              >
+                {item.sub}
+              </p>
+              <h3
+                className={`text-xl font-light tracking-wide ${
+                  item.dark ? "text-white" : "text-black"
+                }`}
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                {item.label}
+              </h3>
+              <span
+                className={`mt-3 block w-fit border-b pb-px text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                  item.dark
+                    ? "text-white border-white/50 group-hover:border-white"
+                    : "text-black border-black/40 group-hover:border-black"
+                }`}
+              >
+                Découvrir
+              </span>
             </div>
           </Link>
         ))}

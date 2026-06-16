@@ -122,3 +122,4 @@
  GET /shop 200 in 138ms (next.js: 101ms, application-code: 37ms)
  GET /shop 200 in 178ms (next.js: 3ms, application-code: 175ms)
  GET /shop 200 in 60ms (next.js: 3ms, application-code: 57ms)
+[?25h

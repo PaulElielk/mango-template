@@ -5,15 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, Minus, Plus, ShoppingBag, Trash2, ClipboardList, CheckCircle } from "lucide-react";
 import { useShop, type CartItem } from "@/app/context/ShopContext";
+import { brandConfig } from "@/app/data/brand";
 import { formatFCFA } from "@/app/data/products";
 
 const CONTACT_METHODS = ["WhatsApp", "Appel", "Email"];
 const DELIVERY_OPTIONS = ["Retrait en boutique", "Livraison à domicile"];
-const PAYMENT_INTENTS = [
-  "Paiement à la livraison",
-  "Paiement mobile money à confirmer",
-  "Paiement en ligne bientôt disponible",
-];
+const PAYMENT_INTENTS = brandConfig.payments;
 
 type OrderRequestForm = {
   fullName: string;
@@ -139,7 +136,11 @@ function OrderRequestModal({
               {orderReference}
             </h3>
             <p className="text-[13px] text-gray-500 leading-6 max-w-md">
-              Votre demande de commande a été préparée. La connexion à l’envoi réel sera ajoutée lors de la mise en production.
+              Votre demande de commande a été préparée. L’envoi réel sera ajouté lors de la mise en production.
+            </p>
+            <p className="mt-4 text-[12px] text-gray-500 leading-6 max-w-md">
+              Commandes : {brandConfig.contact.orderReceiverName} · Contact :{" "}
+              {brandConfig.contact.orderPhone}
             </p>
             <button
               type="button"
@@ -154,7 +155,7 @@ function OrderRequestModal({
             <div className="flex items-center justify-between px-5 sm:px-6 py-5 border-b border-gray-100 shrink-0">
               <div>
                 <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 mb-1">
-                  Prototype
+                  {brandConfig.brand.name}
                 </p>
                 <h3
                   id="order-request-title"
@@ -176,7 +177,12 @@ function OrderRequestModal({
             <form onSubmit={handleSubmit} noValidate className="min-h-0 overflow-y-auto">
               <div className="px-5 sm:px-6 py-5 border-b border-gray-100">
                 <p className="text-[12px] leading-6 text-gray-500">
-                  Cette commande sera envoyée comme une demande. Le paiement réel sera confirmé après contact avec la boutique.
+                  Votre demande de commande sera préparée puis confirmée par l’équipe SB LUXURY CASUAL.
+                  Les frais de livraison et les modalités de paiement sont confirmés après validation de la commande.
+                </p>
+                <p className="mt-3 text-[12px] leading-6 text-gray-500">
+                  Commandes : {brandConfig.contact.orderReceiverName} · Contact commandes :{" "}
+                  {brandConfig.contact.orderPhone}
                 </p>
               </div>
 
@@ -351,7 +357,7 @@ function OrderRequestModal({
 
                 <fieldset className="grid gap-2">
                   <legend className="text-[11px] tracking-[0.18em] uppercase">
-                    Intention de paiement
+                    Mode de paiement souhaité
                   </legend>
                   <div className="grid gap-2">
                     {PAYMENT_INTENTS.map((intent) => (

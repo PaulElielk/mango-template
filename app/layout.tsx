@@ -2,23 +2,24 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ShopProvider } from "@/app/context/ShopContext";
+import { brandConfig } from "@/app/data/brand";
 
 const siteDescription =
-  "Prototype présente une sélection de mode féminine contemporaine, avec robes, vestes, manteaux, accessoires et nouveautés dans une expérience boutique élégante.";
+  "Mode premium masculine à Abidjan. SB LUXURY CASUAL crée depuis 2018 des pièces raffinées pour les hommes qui cultivent la distinction.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Prototype | Mode féminine",
-    template: "%s | Prototype",
+    default: brandConfig.brand.name,
+    template: `%s | ${brandConfig.brand.name}`,
   },
   description: siteDescription,
   keywords: [
-    "prototype",
-    "mode féminine",
-    "vêtements",
-    "robes",
-    "vestes",
+    "SB LUXURY CASUAL",
+    "mode premium masculine",
+    "mode homme Abidjan",
+    "vêtements homme",
+    "élégance africaine",
     "boutique",
     "FCFA",
   ],
@@ -27,16 +28,23 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Prototype | Mode féminine",
+    title: brandConfig.brand.name,
     description: siteDescription,
     type: "website",
-    siteName: "Prototype",
+    siteName: brandConfig.brand.name,
     locale: "fr_FR",
+    images: [
+      {
+        url: brandConfig.assets.hero.src,
+        alt: brandConfig.brand.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Prototype | Mode féminine",
+    title: brandConfig.brand.name,
     description: siteDescription,
+    images: [brandConfig.assets.hero.src],
   },
 };
 

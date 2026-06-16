@@ -65,7 +65,7 @@ export default function SearchOverlay() {
     handleClose();
   };
 
-  const popularSearches = ["Robes", "Vestes", "Nouveautés", "Manteaux", "Pulls"];
+  const popularSearches = ["Chemises", "Surchemises", "Pantalons", "Accessoires", "Nouveautés"];
 
   return (
     <div
@@ -89,7 +89,7 @@ export default function SearchOverlay() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher une pièce, une catégorie…"
+            placeholder="Rechercher une pièce, une catégorie..."
             className="w-full text-[15px] md:text-[17px] tracking-wide outline-none placeholder:text-gray-300 bg-transparent"
           />
         </form>
@@ -153,7 +153,11 @@ export default function SearchOverlay() {
                   type="button"
                   key={term}
                   onClick={() => {
-                    router.push(`/shop?category=${encodeURIComponent(term)}`);
+                    const href =
+                      term === "Nouveautés"
+                        ? "/shop"
+                        : `/shop?search=${encodeURIComponent(term)}`;
+                    router.push(href);
                     handleClose();
                   }}
                   className="border border-gray-200 text-[12px] tracking-wide px-4 py-2.5 hover:border-black hover:bg-black hover:text-white transition-all duration-200 min-h-[44px]"

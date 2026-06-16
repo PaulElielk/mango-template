@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { brandConfig } from "@/app/data/brand";
 
 const columns = [
   {
@@ -23,7 +24,10 @@ const columns = [
   },
 ];
 
-const socialLinks = ["Instagram", "TikTok", "Pinterest", "YouTube", "Facebook"];
+const socialLinks = [
+  { label: "Instagram", href: brandConfig.socialLinks.instagram },
+  { label: "Facebook", href: brandConfig.socialLinks.facebook },
+];
 
 export default function Footer() {
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -53,20 +57,47 @@ export default function Footer() {
   return (
     <footer id="footer" className="bg-white border-t border-gray-100 pt-16 pb-8 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-          {/* Brand column */}
           <div className="col-span-2 md:col-span-1">
-            <p className="logo-text text-lg font-semibold tracking-[0.3em] uppercase mb-4">Prototype</p>
-            <p className="text-[12px] text-gray-500 leading-relaxed max-w-[200px]">
-              Mode féminine élégante, conçue pour la femme moderne et cosmopolite.
+            <p className="logo-text text-lg font-semibold tracking-[0.2em] uppercase mb-3">
+              {brandConfig.brand.name}
             </p>
+            <p
+              className="mb-4 text-lg font-light leading-snug text-black"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              {brandConfig.brand.slogan}
+            </p>
+            <p className="text-[12px] text-gray-500 leading-relaxed max-w-[240px]">
+              {brandConfig.brand.shortDescription}
+            </p>
+            <dl className="mt-6 space-y-3 text-[12px] leading-5 text-gray-500">
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.18em] text-gray-400">
+                  WhatsApp
+                </dt>
+                <dd>{brandConfig.contact.whatsapp}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.18em] text-gray-400">
+                  Showroom
+                </dt>
+                <dd>{brandConfig.contact.showroom}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.18em] text-gray-400">
+                  Horaires
+                </dt>
+                <dd>{brandConfig.contact.openingHours}</dd>
+              </div>
+            </dl>
           </div>
 
-          {/* Link columns */}
           {columns.map((col) => (
             <div key={col.title}>
-              <p className="text-[10px] tracking-[0.2em] uppercase font-medium mb-4">{col.title}</p>
+              <p className="text-[10px] tracking-[0.2em] uppercase font-medium mb-4">
+                {col.title}
+              </p>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
@@ -83,26 +114,34 @@ export default function Footer() {
           ))}
 
           <div>
-            <p className="text-[10px] tracking-[0.2em] uppercase font-medium mb-4">Suivez-nous</p>
+            <p className="text-[10px] tracking-[0.2em] uppercase font-medium mb-4">
+              Suivez-nous
+            </p>
             <ul className="space-y-2.5">
               {socialLinks.map((link) => (
-                <li key={link}>
-                  <span className="text-[12px] text-gray-400 tracking-wide" aria-disabled="true">
-                    {link} · Bientôt disponible
-                  </span>
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[12px] text-gray-500 hover:text-black transition-colors tracking-wide"
+                  >
+                    {link.label}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Newsletter */}
         <div className="border-t border-gray-100 pt-10 mb-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <p className="text-[13px] font-medium tracking-wide mb-1">Restez informée</p>
+              <p className="text-[13px] font-medium tracking-wide mb-1">
+                Restez informé
+              </p>
               <p className="text-[12px] text-gray-500">
-                Inscrivez-vous pour recevoir nos dernières nouveautés et offres exclusives.
+                Recevez les nouveautés et actualités de {brandConfig.brand.name}.
               </p>
             </div>
             <form onSubmit={handleNewsletterSubmit} noValidate className="flex-1 md:max-w-md">
@@ -124,12 +163,12 @@ export default function Footer() {
                   aria-describedby={
                     newsletterError || newsletterSubmitted ? "newsletter-feedback" : undefined
                   }
-                  className="flex-1 border border-gray-200 px-4 py-3 text-[12px] outline-none focus:border-black transition-colors placeholder:text-gray-400"
+                  className="flex-1 min-w-0 border border-gray-200 px-4 py-3 text-[12px] outline-none focus:border-black transition-colors placeholder:text-gray-400"
                 />
                 <button
                   type="submit"
                   id="newsletter-btn"
-                  className="bg-black text-white text-[10px] tracking-[0.2em] uppercase px-6 py-3 hover:bg-gray-900 transition-colors whitespace-nowrap"
+                  className="bg-black text-white text-[10px] tracking-[0.2em] uppercase px-5 sm:px-6 py-3 hover:bg-gray-900 transition-colors whitespace-nowrap"
                 >
                   S&apos;inscrire
                 </button>
@@ -150,16 +189,21 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-6 border-t border-gray-100">
           <p className="text-[11px] text-gray-400">
-            © 2026 Prototype. Tous droits réservés.
+            © 2026 {brandConfig.brand.name}. Tous droits réservés.
           </p>
           <div className="flex gap-6">
-            <Link href="/conditions-generales" className="text-[11px] text-gray-400 hover:text-black transition-colors">
+            <Link
+              href="/conditions-generales"
+              className="text-[11px] text-gray-400 hover:text-black transition-colors"
+            >
               Mentions légales
             </Link>
-            <Link href="/politique-confidentialite" className="text-[11px] text-gray-400 hover:text-black transition-colors">
+            <Link
+              href="/politique-confidentialite"
+              className="text-[11px] text-gray-400 hover:text-black transition-colors"
+            >
               Confidentialité
             </Link>
           </div>

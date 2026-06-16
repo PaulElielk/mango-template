@@ -106,7 +106,9 @@ export default function FilterSheet() {
           <div>
             <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 mb-3">Catégorie</p>
             <div className="flex flex-wrap gap-2">
-              {categories.filter(c => c !== "Accessoires" && c !== "Soldes").map((cat) => (
+              {categories
+                .filter((c) => !["Accessoires", "Soldes", "Robes"].includes(c))
+                .map((cat) => (
                 <button
                   type="button"
                   key={cat}

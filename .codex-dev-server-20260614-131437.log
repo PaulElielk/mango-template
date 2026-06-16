@@ -1,0 +1,22 @@
+
+> mango-store@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.28:3000
+✓ Ready in 513ms
+
+ GET / 200 in 48ms (next.js: 3ms, application-code: 45ms)
+ GET / 200 in 66ms (next.js: 3ms, application-code: 64ms)
+ GET / 200 in 40ms (next.js: 3ms, application-code: 37ms)
+ GET /ventes 404 in 110ms (next.js: 30ms, application-code: 80ms)
+ GET /prospects 404 in 116ms (next.js: 68ms, application-code: 48ms)
+ GET /faq 200 in 45ms (next.js: 26ms, application-code: 20ms)
+ GET /livraison-retours 200 in 46ms (next.js: 26ms, application-code: 20ms)
+ GET /shop 200 in 45ms (next.js: 26ms, application-code: 19ms)
+ GET /shop 200 in 130ms (next.js: 5ms, application-code: 124ms)
+ GET / 200 in 30ms (next.js: 5ms, application-code: 26ms)
+ GET /contact 200 in 54ms (next.js: 33ms, application-code: 21ms)
+ GET / 200 in 28ms (next.js: 3ms, application-code: 25ms)
+ GET /shop 200 in 16ms (next.js: 3ms, application-code: 13ms)
