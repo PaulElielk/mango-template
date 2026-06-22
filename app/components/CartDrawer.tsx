@@ -455,7 +455,7 @@ export default function CartDrawer() {
       <div
         id="cart-backdrop"
         onClick={handleCloseCart}
-        className={`fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[180] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
           isCartOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       />
@@ -463,7 +463,7 @@ export default function CartDrawer() {
       <div
         ref={drawerRef}
         id="cart-drawer"
-        className={`fixed top-0 right-0 h-full z-[95] bg-white flex flex-col shadow-2xl
+        className={`fixed top-0 right-0 h-full z-[190] bg-white flex flex-col shadow-2xl
           w-full sm:w-[420px] max-w-full
           transition-transform duration-400 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
           ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}

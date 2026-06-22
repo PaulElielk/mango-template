@@ -29,12 +29,19 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+.codex-dev-server-*.log
+.codex-dev-server-*.err.log
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# supabase local runtime
+supabase/.branches
+supabase/.temp
 
 # typescript
 *.tsbuildinfo

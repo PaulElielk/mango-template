@@ -1,5 +1,5 @@
 export interface Product {
-  id: number;
+  id: number | string;
   slug: string;
   name: string;
   description: string;
@@ -8,6 +8,7 @@ export interface Product {
   image: string;
   secondaryImages: string[];
   category: string;
+  categorySlug?: string;
   colors: string[];
   sizes: string[];
   stockStatus: "In Stock" | "Low Stock" | "Out of Stock";

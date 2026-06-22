@@ -4,9 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X, ArrowRight } from "lucide-react";
 import { useShop } from "@/app/context/ShopContext";
-import { mockProducts } from "@/app/data/products";
+import { mockProducts, type Product } from "@/app/data/products";
 
-export default function SearchOverlay() {
+type SearchOverlayProps = {
+  products?: Product[];
+};
+
+export default function SearchOverlay({ products = mockProducts }: SearchOverlayProps) {
   const { isSearchOpen, closeSearch } = useShop();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +48,7 @@ export default function SearchOverlay() {
   // Live results (up to 6)
   const results =
     query.trim().length > 1
-      ? mockProducts
+      ? products
           .filter(
             (p) =>
               p.name.toLowerCase().includes(query.toLowerCase()) ||

@@ -7,13 +7,18 @@ import {
   mockProducts,
 } from "@/app/data/products";
 import { brandConfig } from "@/app/data/brand";
+import {
+  getRelatedSupabaseProducts,
+  getSupabaseProductBySlug,
+} from "@/lib/products";
 import ProductDetailClient from "./ProductDetailClient";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamicParams = false;
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return mockProducts.map((product) => ({
@@ -25,7 +30,8 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { data: supabaseProduct } = await getSupabaseProductBySlug(slug);
+  const product = supabaseProduct ?? getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -57,13 +63,21 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const { data: supabaseProduct } = await getSupabaseProductBySlug(slug);
+  const product = supabaseProduct ?? getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = getRelatedProducts(product, 4);
+  const relatedProducts = supabaseProduct
+    ? (
+        await getRelatedSupabaseProducts(
+          supabaseProduct.categorySlug ?? "",
+          String(supabaseProduct.id)
+        )
+      ).data
+    : getRelatedProducts(product, 4);
 
   return (
     <Suspense

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ShopPageClient from "./ShopPageClient";
 import { brandConfig } from "@/app/data/brand";
+import { mockProducts } from "@/app/data/products";
+import { getSupabaseProducts } from "@/lib/products";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Boutique",
@@ -20,7 +24,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Shop() {
+export default async function Shop() {
+  const { data: supabaseProducts, error } = await getSupabaseProducts();
+  const products = supabaseProducts.length > 0 ? supabaseProducts : mockProducts;
+  const catalogNotice =
+    error || supabaseProducts.length === 0
+      ? "Le catalogue local est affiché pour le moment."
+      : undefined;
+
   return (
     <Suspense
       fallback={
@@ -29,7 +40,7 @@ export default function Shop() {
         </div>
       }
     >
-      <ShopPageClient />
+      <ShopPageClient products={products} catalogNotice={catalogNotice} />
     </Suspense>
   );
 }

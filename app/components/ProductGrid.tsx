@@ -3,11 +3,19 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
-import { mockProducts } from "@/app/data/products";
+import { mockProducts, type Product } from "@/app/data/products";
 import ProductCard from "./ProductCard";
 import { useShop } from "@/app/context/ShopContext";
 
-export default function ProductGrid() {
+type ProductGridProps = {
+  products?: Product[];
+  catalogNotice?: string;
+};
+
+export default function ProductGrid({
+  products = mockProducts,
+  catalogNotice,
+}: ProductGridProps) {
   const searchParams = useSearchParams();
   const { openFilter } = useShop();
   const router = useRouter();
@@ -17,7 +25,7 @@ export default function ProductGrid() {
   const activeColor = searchParams.get("color") ?? "";
   const searchQuery = searchParams.get("search") ?? "";
 
-  const filtered = mockProducts.filter((p) => {
+  const filtered = products.filter((p) => {
     if (activeCategory && activeCategory !== "Nouveautés") {
       if (p.category !== activeCategory) return false;
     }
@@ -37,7 +45,10 @@ export default function ProductGrid() {
   });
 
   const hasFilters = activeCategory || activeSize || activeColor || searchQuery;
-  const categoryPills = ["Nouveautés", "Jeans", "Manteaux", "Vestes", "Pantalons", "Pulls", "Tops"];
+  const categoryPills = [
+    "Nouveautés",
+    ...Array.from(new Set(products.map((product) => product.category))).slice(0, 7),
+  ];
 
   function handleCategoryPillClick(category: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -85,6 +96,11 @@ export default function ProductGrid() {
 
       <div className="flex items-center justify-between mb-8 gap-4">
         <div className="flex items-center gap-2 flex-wrap flex-1">
+          {catalogNotice && (
+            <p className="basis-full text-[12px] text-gray-400 tracking-wide mb-1">
+              {catalogNotice}
+            </p>
+          )}
           {activeCategory && (
             <button
               type="button"

@@ -16,7 +16,7 @@ export interface CartItem {
 type StoredCartItem = {
   cartId?: unknown;
   productId?: unknown;
-  product?: { id?: unknown };
+  product?: Partial<Product> & { id?: unknown };
   quantity?: unknown;
   size?: unknown;
   color?: unknown;
@@ -24,8 +24,26 @@ type StoredCartItem = {
 
 const CART_STORAGE_KEY = "mango-store-cart";
 
-function buildCartId(productId: number, size: string, color: string) {
+function buildCartId(productId: Product["id"], size: string, color: string) {
   return `${productId}-${size}-${color}`;
+}
+
+function isStoredProduct(value: StoredCartItem["product"]): value is Product {
+  return Boolean(
+    value &&
+      (typeof value.id === "number" || typeof value.id === "string") &&
+      typeof value.slug === "string" &&
+      typeof value.name === "string" &&
+      typeof value.description === "string" &&
+      typeof value.price === "string" &&
+      typeof value.priceValue === "number" &&
+      typeof value.image === "string" &&
+      Array.isArray(value.secondaryImages) &&
+      typeof value.category === "string" &&
+      Array.isArray(value.colors) &&
+      Array.isArray(value.sizes) &&
+      typeof value.stockStatus === "string"
+  );
 }
 
 function sanitizeStoredCart(rawValue: string | null): CartItem[] {
@@ -38,12 +56,14 @@ function sanitizeStoredCart(rawValue: string | null): CartItem[] {
     return parsed.reduce<CartItem[]>((items, rawItem) => {
       const item = rawItem as StoredCartItem;
       const productId =
-        typeof item.productId === "number"
+        typeof item.productId === "number" || typeof item.productId === "string"
           ? item.productId
-          : typeof item.product?.id === "number"
+          : typeof item.product?.id === "number" || typeof item.product?.id === "string"
             ? item.product.id
             : null;
-      const product = mockProducts.find((candidate) => candidate.id === productId);
+      const product =
+        mockProducts.find((candidate) => candidate.id === productId) ??
+        (isStoredProduct(item.product) ? item.product : undefined);
       const size = typeof item.size === "string" ? item.size : "";
       const color = typeof item.color === "string" ? item.color : "";
       const quantity =
@@ -73,6 +93,7 @@ function serializeCartItems(cartItems: CartItem[]) {
   return JSON.stringify(
     cartItems.map((item) => ({
       productId: item.product.id,
+      product: item.product,
       quantity: item.quantity,
       size: item.size,
       color: item.color,

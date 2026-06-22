@@ -8,18 +8,27 @@ import SearchOverlay from "@/app/components/SearchOverlay";
 import FilterSheet from "@/app/components/FilterSheet";
 import BackToTop from "@/app/components/BackToTop";
 import ProductGrid from "@/app/components/ProductGrid";
+import type { Product } from "@/app/data/products";
 
-export default function ShopPageClient() {
+type ShopPageClientProps = {
+  products: Product[];
+  catalogNotice?: string;
+};
+
+export default function ShopPageClient({
+  products,
+  catalogNotice,
+}: ShopPageClientProps) {
   return (
     <>
       <Header />
-      <SearchOverlay />
+      <SearchOverlay products={products} />
       <CartDrawer />
       <Sidebar />
 
       <main className="pt-24 md:pt-28">
         <h1 className="sr-only">Boutique</h1>
-        <ProductGrid />
+        <ProductGrid products={products} catalogNotice={catalogNotice} />
         <FilterSheet />
       </main>
 
