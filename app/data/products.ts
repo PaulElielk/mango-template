@@ -13,6 +13,14 @@ export interface Product {
   sizes: string[];
   stockStatus: "In Stock" | "Low Stock" | "Out of Stock";
   isNew?: boolean;
+  variants?: ProductVariant[];
+}
+
+export type ProductVariant = {
+  id: string;
+  size: string | null;
+  color: string | null;
+  stockQuantity: number;
 }
 
 export const mockProducts: Product[] = [

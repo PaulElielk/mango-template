@@ -30,9 +30,10 @@ export default function PrivacyPage() {
               un document juridique final.
             </p>
             <p>
-              Dans cette version frontend-only, le formulaire de contact, la
-              newsletter et la demande de commande ne transmettent aucune donnée
-              à un service réel.
+              Dans cette version V1, la demande de commande peut transmettre les
+              informations saisies à Supabase afin de préparer le suivi client.
+              Le formulaire de contact et la newsletter restent à connecter à
+              des services dédiés.
             </p>
             <p>
               La version définitive devra préciser les données réellement

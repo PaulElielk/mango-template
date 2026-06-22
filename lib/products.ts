@@ -81,6 +81,12 @@ export function mapSupabaseProductToProduct(
     sizes: sizes.length > 0 ? sizes : ["Unique"],
     stockStatus,
     isNew: product.is_new,
+    variants: variants.map((variant) => ({
+      id: variant.id,
+      size: variant.size,
+      color: variant.color,
+      stockQuantity: variant.stock_quantity,
+    })),
   };
 }
 

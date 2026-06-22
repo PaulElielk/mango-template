@@ -11,6 +11,8 @@ import { formatFCFA } from "@/app/data/products";
 const CONTACT_METHODS = ["WhatsApp", "Appel", "Email"];
 const DELIVERY_OPTIONS = ["Retrait en boutique", "Livraison à domicile"];
 const PAYMENT_INTENTS = brandConfig.payments;
+const ORDER_SUBMIT_ERROR =
+  "Impossible d'envoyer la demande pour le moment. Veuillez réessayer ou nous contacter directement par WhatsApp.";
 
 type OrderRequestForm = {
   fullName: string;
@@ -38,17 +40,6 @@ const initialOrderRequestForm: OrderRequestForm = {
   note: "",
 };
 
-function generateOrderReference() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const timestamp = now
-    .toISOString()
-    .replace(/\D/g, "")
-    .slice(4, 14);
-
-  return `CMD-${year}-${timestamp}`;
-}
-
 function validateOrderRequest(form: OrderRequestForm) {
   const errors: OrderRequestErrors = {};
 
@@ -70,15 +61,19 @@ function OrderRequestModal({
   total,
   onClose,
   onFinish,
+  onOrderSaved,
 }: {
   items: CartItem[];
   total: number;
   onClose: () => void;
   onFinish: () => void;
+  onOrderSaved: () => void;
 }) {
   const [form, setForm] = useState<OrderRequestForm>(initialOrderRequestForm);
   const [errors, setErrors] = useState<OrderRequestErrors>({});
   const [orderReference, setOrderReference] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isConfirmed = orderReference !== null;
 
   const handleChange =
@@ -86,20 +81,84 @@ function OrderRequestModal({
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm((current) => ({ ...current, [field]: event.target.value }));
       setErrors((current) => ({ ...current, [field]: undefined }));
+      setSubmitError("");
     };
 
   const handleChoice = (field: keyof OrderRequestForm, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
+    setSubmitError("");
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const nextErrors = validateOrderRequest(form);
     setErrors(nextErrors);
+    setSubmitError("");
 
     if (Object.keys(nextErrors).length > 0) return;
 
-    setOrderReference(generateOrderReference());
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer: {
+            fullName: form.fullName,
+            phone: form.phone,
+            email: form.email,
+            city: form.city,
+            address: form.address,
+          },
+          contactMethod: form.contactMethod,
+          deliveryMethod: form.deliveryOption,
+          deliveryZone: form.city,
+          deliveryAddress: form.address,
+          paymentMethod: form.paymentIntent,
+          notes: form.note,
+          totalAmount: total,
+          items: items.map((item) => {
+            const selectedVariant = item.product.variants?.find(
+              (variant) =>
+                (variant.size ?? "Unique") === item.size &&
+                (variant.color ?? "Unique") === item.color
+            );
+
+            return {
+              productId: item.product.id,
+              productVariantId: selectedVariant?.id ?? null,
+              productName: item.product.name,
+              size: item.size,
+              color: item.color,
+              quantity: item.quantity,
+              unitPrice: item.product.priceValue,
+              totalPrice: item.product.priceValue * item.quantity,
+            };
+          }),
+        }),
+      });
+
+      const result = (await response.json()) as {
+        success?: boolean;
+        orderNumber?: string;
+        message?: string;
+      };
+
+      if (!response.ok || !result.success || !result.orderNumber) {
+        setSubmitError(result.message ?? ORDER_SUBMIT_ERROR);
+        return;
+      }
+
+      setOrderReference(result.orderNumber);
+      onOrderSaved();
+    } catch {
+      setSubmitError(ORDER_SUBMIT_ERROR);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -136,7 +195,7 @@ function OrderRequestModal({
               {orderReference}
             </h3>
             <p className="text-[13px] text-gray-500 leading-6 max-w-md">
-              Votre demande de commande a été préparée. L’envoi réel sera ajouté lors de la mise en production.
+              Votre demande de commande a bien été envoyée. L’équipe SB LUXURY CASUAL vous contactera pour confirmer les détails de livraison et de paiement.
             </p>
             <p className="mt-4 text-[12px] text-gray-500 leading-6 max-w-md">
               Commandes : {brandConfig.contact.orderReceiverName} · Contact :{" "}
@@ -393,10 +452,16 @@ function OrderRequestModal({
               <div className="px-5 sm:px-6 pb-6">
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="w-full bg-black text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-gray-900 transition-colors min-h-[52px]"
                 >
-                  Préparer la demande
+                  {isSubmitting ? "Envoi en cours..." : "Envoyer la demande"}
                 </button>
+                {submitError && (
+                  <p className="mt-3 text-[12px] text-red-600 leading-5" role="status">
+                    {submitError}
+                  </p>
+                )}
               </div>
             </form>
           </>
@@ -611,12 +676,13 @@ export default function CartDrawer() {
         </div>
       </div>
 
-      {showOrderRequest && hasItems && (
+      {showOrderRequest && (hasItems || cartCount === 0) && (
         <OrderRequestModal
           items={cartItems}
           total={cartTotal}
           onClose={() => setShowOrderRequest(false)}
           onFinish={handleOrderFinish}
+          onOrderSaved={clearCart}
         />
       )}
     </>

@@ -17,7 +17,7 @@ const sections = [
   {
     title: "Prix et devise",
     body:
-      "Les prix sont affichés en FCFA dans cette version frontend. Les montants définitifs seront confirmés avec le client avant la mise en production.",
+      "Les prix sont affichés en FCFA. Les montants définitifs seront confirmés avec le client avant la validation de la commande.",
   },
   {
     title: "Paiement",
@@ -48,7 +48,7 @@ const sections = [
 export const metadata: Metadata = {
   title: "Conditions générales",
   description:
-    "Base préparatoire de conditions générales pour SB LUXURY CASUAL, à adapter juridiquement avant mise en production.",
+    "Base préparatoire de conditions générales pour SB LUXURY CASUAL, à adapter juridiquement avant lancement.",
 };
 
 export default function TermsPage() {
