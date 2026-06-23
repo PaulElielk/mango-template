@@ -151,6 +151,7 @@ export default function ProductGrid({
             type="button"
             id="filter-open-btn"
             onClick={openFilter}
+            aria-label="Filtrer"
             className="flex items-center gap-2 border border-gray-300 text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:border-black transition-colors min-h-[44px] min-w-[44px]"
           >
             <SlidersHorizontal size={14} strokeWidth={1.5} />

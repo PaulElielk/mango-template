@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { brandConfig } from "@/app/data/brand";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import type { OrderItemInsert } from "@/lib/supabase/types";
 
@@ -7,6 +8,7 @@ const ORDER_ERROR_MESSAGE =
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const SUPPORTED_PAYMENT_METHODS = new Set(brandConfig.payments);
 
 export class SafeOrderError extends Error {
   constructor(message = ORDER_ERROR_MESSAGE) {
@@ -42,6 +44,7 @@ export type CreateOrderInput = {
   deliveryAddress?: string;
   paymentMethod?: string;
   notes?: string;
+  website?: string;
   totalAmount: number;
   items: OrderCartItemInput[];
 };
@@ -68,6 +71,10 @@ export function generateOrderNumber() {
 }
 
 function validateOrderInput(input: CreateOrderInput) {
+  if (cleanString(input.website)) {
+    throw new SafeOrderError();
+  }
+
   const fullName = cleanString(input.customer?.fullName);
   const phone = cleanString(input.customer?.phone);
   const city = cleanString(input.customer?.city);
@@ -75,6 +82,7 @@ function validateOrderInput(input: CreateOrderInput) {
   const deliveryMethod = cleanString(input.deliveryMethod);
   const deliveryAddress = cleanString(input.deliveryAddress);
   const customerAddress = cleanString(input.customer?.address);
+  const paymentMethod = cleanString(input.paymentMethod);
   const requiresAddress = deliveryMethod
     .toLowerCase()
     .includes("livraison");
@@ -93,6 +101,10 @@ function validateOrderInput(input: CreateOrderInput) {
 
   if (!Array.isArray(input.items) || input.items.length === 0) {
     throw new SafeOrderError("Votre panier est vide.");
+  }
+
+  if (paymentMethod && !SUPPORTED_PAYMENT_METHODS.has(paymentMethod)) {
+    throw new SafeOrderError("Le mode de paiement sélectionné est invalide.");
   }
 
   const computedTotal = input.items.reduce((sum, item) => {
@@ -134,6 +146,39 @@ function validateOrderInput(input: CreateOrderInput) {
   };
 }
 
+async function validateVariantStock(
+  supabase: ReturnType<typeof getSupabaseClient>,
+  items: OrderCartItemInput[]
+) {
+  const variantItems = items.filter((item) => isUuid(item.productVariantId));
+
+  if (variantItems.length === 0) return;
+
+  for (const item of variantItems) {
+    const quantity = Math.floor(item.quantity);
+    const { data, error } = await supabase
+      .from("product_variants")
+      .select("stock_quantity")
+      .eq("id", item.productVariantId as string)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[Supabase] check variant stock:", error.message);
+      throw new SafeOrderError();
+    }
+
+    if (!data) {
+      throw new SafeOrderError("Une variante sélectionnée n'est plus disponible.");
+    }
+
+    if (quantity > data.stock_quantity) {
+      throw new SafeOrderError(
+        "La quantité demandée n'est plus disponible pour une variante sélectionnée."
+      );
+    }
+  }
+}
+
 function toOrderItemInsert(orderId: string, item: OrderCartItemInput): OrderItemInsert {
   const productId = isUuid(item.productId) ? item.productId : null;
   const productVariantId = isUuid(item.productVariantId)
@@ -160,6 +205,8 @@ export async function createOrderRequest(input: CreateOrderInput) {
   const supabase = getSupabaseClient();
   const customerId = randomUUID();
   const orderId = randomUUID();
+
+  await validateVariantStock(supabase, input.items);
 
   const { error: customerError } = await supabase
     .from("customers")

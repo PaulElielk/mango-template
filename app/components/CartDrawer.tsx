@@ -3,7 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Minus, Plus, ShoppingBag, Trash2, ClipboardList, CheckCircle } from "lucide-react";
+import {
+  X,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Trash2,
+  ClipboardList,
+  CheckCircle,
+  MessageCircle,
+} from "lucide-react";
 import { useShop, type CartItem } from "@/app/context/ShopContext";
 import { brandConfig } from "@/app/data/brand";
 import { formatFCFA } from "@/app/data/products";
@@ -13,11 +22,14 @@ const DELIVERY_OPTIONS = ["Retrait en boutique", "Livraison à domicile"];
 const PAYMENT_INTENTS = brandConfig.payments;
 const ORDER_SUBMIT_ERROR =
   "Impossible d'envoyer la demande pour le moment. Veuillez réessayer ou nous contacter directement par WhatsApp.";
+const WHATSAPP_CONFIRMATION_DISPLAY = "+225 0101905020";
+const WHATSAPP_CONFIRMATION_NUMBER = "2250101905020";
 
 type OrderRequestForm = {
   fullName: string;
   phone: string;
   email: string;
+  website: string;
   city: string;
   address: string;
   contactMethod: string;
@@ -32,6 +44,7 @@ const initialOrderRequestForm: OrderRequestForm = {
   fullName: "",
   phone: "",
   email: "",
+  website: "",
   city: "",
   address: "",
   contactMethod: CONTACT_METHODS[0],
@@ -56,6 +69,45 @@ function validateOrderRequest(form: OrderRequestForm) {
   return errors;
 }
 
+function buildWhatsAppConfirmationUrl({
+  form,
+  items,
+  orderNumber,
+  total,
+}: {
+  form: OrderRequestForm;
+  items: CartItem[];
+  orderNumber: string;
+  total: number;
+}) {
+  const deliveryLines = [
+    `Livraison : ${form.city.trim()}`,
+    form.address.trim() ? `Adresse : ${form.address.trim()}` : "",
+    form.paymentIntent.trim()
+      ? `Mode de paiement souhaité : ${form.paymentIntent.trim()}`
+      : "",
+  ].filter(Boolean);
+
+  const itemLines = items.map((item) => {
+    const itemTotal = formatFCFA(item.product.priceValue * item.quantity);
+
+    return `- ${item.product.name} | Qté ${item.quantity} | Taille ${item.size} | Couleur ${item.color} | ${itemTotal}`;
+  });
+
+  const message = [
+    "Bonjour SB LUXURY CASUAL, je viens de passer une demande de commande sur le site.",
+    `Numéro de commande : ${orderNumber}`,
+    `Nom : ${form.fullName.trim()}`,
+    `Téléphone : ${form.phone.trim()}`,
+    ...deliveryLines,
+    "Articles :",
+    ...itemLines,
+    `Total : ${formatFCFA(total)}`,
+  ].join("\n");
+
+  return `https://wa.me/${WHATSAPP_CONFIRMATION_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
 function OrderRequestModal({
   items,
   total,
@@ -72,6 +124,7 @@ function OrderRequestModal({
   const [form, setForm] = useState<OrderRequestForm>(initialOrderRequestForm);
   const [errors, setErrors] = useState<OrderRequestErrors>({});
   const [orderReference, setOrderReference] = useState<string | null>(null);
+  const [whatsappConfirmationUrl, setWhatsappConfirmationUrl] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isConfirmed = orderReference !== null;
@@ -119,6 +172,7 @@ function OrderRequestModal({
           deliveryAddress: form.address,
           paymentMethod: form.paymentIntent,
           notes: form.note,
+          website: form.website,
           totalAmount: total,
           items: items.map((item) => {
             const selectedVariant = item.product.variants?.find(
@@ -152,6 +206,14 @@ function OrderRequestModal({
         return;
       }
 
+      setWhatsappConfirmationUrl(
+        buildWhatsAppConfirmationUrl({
+          form,
+          items,
+          orderNumber: result.orderNumber,
+          total,
+        })
+      );
       setOrderReference(result.orderNumber);
       onOrderSaved();
     } catch {
@@ -201,6 +263,22 @@ function OrderRequestModal({
               Commandes : {brandConfig.contact.orderReceiverName} · Contact :{" "}
               {brandConfig.contact.orderPhone}
             </p>
+            {whatsappConfirmationUrl && (
+              <div className="mt-6 flex flex-col items-center gap-3">
+                <a
+                  href={whatsappConfirmationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-black text-[11px] tracking-[0.18em] uppercase px-6 py-4 hover:brightness-95 transition min-h-[52px]"
+                >
+                  <MessageCircle size={15} strokeWidth={1.7} />
+                  Confirmer sur WhatsApp
+                </a>
+                <p className="text-[11px] text-gray-400 leading-5">
+                  Message préparé vers {WHATSAPP_CONFIRMATION_DISPLAY}.
+                </p>
+              </div>
+            )}
             <button
               type="button"
               onClick={onFinish}
@@ -271,6 +349,19 @@ function OrderRequestModal({
               </div>
 
               <div className="px-5 sm:px-6 py-5 grid gap-4">
+                <div className="hidden" aria-hidden="true">
+                  <label>
+                    Site web
+                    <input
+                      name="website"
+                      value={form.website}
+                      onChange={handleChange("website")}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </label>
+                </div>
+
                 <div className="grid sm:grid-cols-2 gap-4">
                   <label className="grid gap-2 text-[11px] tracking-[0.18em] uppercase">
                     Nom complet
