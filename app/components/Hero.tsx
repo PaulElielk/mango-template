@@ -43,12 +43,6 @@ export default function Hero() {
           >
             Découvrir la collection
           </Link>
-          <Link
-            href="/contact"
-            className="inline-block border border-white/40 bg-white text-black text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:bg-transparent hover:text-white transition-all duration-300 animate-fade-in-up-delay"
-          >
-            Nous contacter
-          </Link>
         </div>
       </div>
     </section>

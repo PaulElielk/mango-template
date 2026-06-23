@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
 import { Product } from "@/app/data/products";
 import { useShop } from "@/app/context/ShopContext";
 
@@ -11,7 +10,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addToCart, cartItems } = useShop();
+  const { cartItems } = useShop();
 
   const isOutOfStock = product.stockStatus === "Out of Stock";
   const isInCart = cartItems.some((item) => item.product.id === product.id);
@@ -61,25 +60,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
         </Link>
-
-        {/* Quick add overlay — visible on touch screens, slides up on larger hover devices */}
-        {!isOutOfStock && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
-            <button
-              type="button"
-              id={`ajouter-btn-${product.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                addToCart(product);
-              }}
-              aria-label={`Ajouter rapidement ${product.name} au panier`}
-              className="ajouter-btn w-full bg-white/95 border-t border-gray-200 text-black text-[10px] tracking-[0.2em] uppercase py-4 font-medium flex items-center justify-center gap-2 min-h-[52px]"
-            >
-              <ShoppingBag size={13} strokeWidth={1.5} />
-              Ajouter au panier
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Info */}

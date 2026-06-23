@@ -6,7 +6,8 @@ export default function CategoryBanner() {
       label: "Chemises",
       sub: "Lignes nettes",
       bg: "bg-gray-100",
-      image: "/cat_vestes.png",
+      image: "/products/chemise-akeikoi-a-bloc-couleur-1.jpeg",
+      imageAlt: "Chemise SB LUXURY CASUAL",
       href: "/shop?search=Chemises",
       dark: true,
     },
@@ -14,7 +15,8 @@ export default function CategoryBanner() {
       label: "Surchemises",
       sub: "Élégance décontractée",
       bg: "bg-stone-100",
-      image: "/cat_robes.png",
+      image: "/products/surchemise-adingra-vert-kaki-3.png",
+      imageAlt: "Surchemise SB LUXURY CASUAL",
       href: "/shop?search=Surchemises",
       dark: true,
     },
@@ -22,7 +24,8 @@ export default function CategoryBanner() {
       label: "Pantalons",
       sub: "Coupes affirmées",
       bg: "bg-zinc-900",
-      image: "/cat_accessoires.png",
+      image: "/products/surchemise-adingra-noire-1.jpeg",
+      imageAlt: "Tenue SB LUXURY CASUAL avec pantalon",
       dark: true,
       href: "/shop?search=Pantalons",
     },
@@ -62,7 +65,7 @@ export default function CategoryBanner() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.image}
-                  alt={item.label}
+                  alt={item.imageAlt}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />

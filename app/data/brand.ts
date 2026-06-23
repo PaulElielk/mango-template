@@ -113,7 +113,6 @@ export const brandConfig: BrandConfig = {
     "Orange Money",
     "Wave",
     "Paiement en espèces à la livraison, selon la zone",
-    "Virement bancaire",
   ],
   policies: {
     exchanges:
