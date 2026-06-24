@@ -22,8 +22,8 @@ const DELIVERY_OPTIONS = ["Retrait en boutique", "Livraison à domicile"];
 const PAYMENT_INTENTS = brandConfig.payments;
 const ORDER_SUBMIT_ERROR =
   "Impossible d'envoyer la demande pour le moment. Veuillez réessayer ou nous contacter directement par WhatsApp.";
-const WHATSAPP_CONFIRMATION_DISPLAY = "+225 0101905020";
-const WHATSAPP_CONFIRMATION_NUMBER = "2250101905020";
+const WHATSAPP_CONFIRMATION_DISPLAY = "+225 0759207059";
+const WHATSAPP_CONFIRMATION_NUMBER = "2250759207059";
 
 type OrderRequestForm = {
   fullName: string;
@@ -125,6 +125,8 @@ function OrderRequestModal({
   const [errors, setErrors] = useState<OrderRequestErrors>({});
   const [orderReference, setOrderReference] = useState<string | null>(null);
   const [whatsappConfirmationUrl, setWhatsappConfirmationUrl] = useState("");
+  const [hasOpenedWhatsappConfirmation, setHasOpenedWhatsappConfirmation] =
+    useState(false);
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isConfirmed = orderReference !== null;
@@ -175,15 +177,9 @@ function OrderRequestModal({
           website: form.website,
           totalAmount: total,
           items: items.map((item) => {
-            const selectedVariant = item.product.variants?.find(
-              (variant) =>
-                (variant.size ?? "Unique") === item.size &&
-                (variant.color ?? "Unique") === item.color
-            );
-
             return {
               productId: item.product.id,
-              productVariantId: selectedVariant?.id ?? null,
+              productVariantId: null,
               productName: item.product.name,
               size: item.size,
               color: item.color,
@@ -214,6 +210,7 @@ function OrderRequestModal({
           total,
         })
       );
+      setHasOpenedWhatsappConfirmation(false);
       setOrderReference(result.orderNumber);
       onOrderSaved();
     } catch {
@@ -269,6 +266,7 @@ function OrderRequestModal({
                   href={whatsappConfirmationUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => setHasOpenedWhatsappConfirmation(true)}
                   className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-black text-[11px] tracking-[0.18em] uppercase px-6 py-4 hover:brightness-95 transition min-h-[52px]"
                 >
                   <MessageCircle size={15} strokeWidth={1.7} />
@@ -279,13 +277,20 @@ function OrderRequestModal({
                 </p>
               </div>
             )}
-            <button
-              type="button"
-              onClick={onFinish}
-              className="mt-8 bg-black text-white text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:bg-gray-900 transition-colors min-h-[52px]"
-            >
-              Terminer
-            </button>
+            {hasOpenedWhatsappConfirmation ? (
+              <button
+                type="button"
+                onClick={onFinish}
+                className="mt-8 bg-black text-white text-[11px] tracking-[0.25em] uppercase px-8 py-4 hover:bg-gray-900 transition-colors min-h-[52px]"
+              >
+                J&apos;ai envoyé le message
+              </button>
+            ) : (
+              <p className="mt-8 max-w-sm text-[12px] text-gray-500 leading-6">
+                Ouvrez WhatsApp pour confirmer votre demande avant de fermer
+                cette fenêtre.
+              </p>
+            )}
           </div>
         ) : (
           <>

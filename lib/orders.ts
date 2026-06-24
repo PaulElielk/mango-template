@@ -180,10 +180,8 @@ async function validateVariantStock(
 }
 
 function toOrderItemInsert(orderId: string, item: OrderCartItemInput): OrderItemInsert {
-  const productId = isUuid(item.productId) ? item.productId : null;
-  const productVariantId = isUuid(item.productVariantId)
-    ? item.productVariantId
-    : null;
+  const productId = null;
+  const productVariantId = null;
   const quantity = Math.floor(item.quantity);
   const unitPrice = Math.floor(item.unitPrice);
 

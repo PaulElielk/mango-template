@@ -82,8 +82,8 @@ export const brandConfig: BrandConfig = {
   contact: {
     whatsapp: "0759207059",
     phone: "0759207059",
-    orderReceiverName: "Ariel Colombe",
-    orderPhone: "+225 0584438215",
+    orderReceiverName: "Stephen Brice",
+    orderPhone: "+225 0759207059",
     email: "Pas encore disponible",
     showroom: "Riviera Faya, non loin de Génie 2000",
     openingHours: "Lundi au samedi, de 09h à 20h",
