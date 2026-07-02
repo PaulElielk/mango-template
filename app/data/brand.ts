@@ -63,7 +63,7 @@ export const brandConfig: BrandConfig = {
       "SB LUXURY CASUAL est une marque de mode premium inspirée par l’élégance moderne et l’art de vivre africain. Depuis 2018, nous créons des pièces raffinées pour les hommes qui cultivent la distinction.",
     foundedSince: "2018",
     city: "Abidjan, Côte d’Ivoire",
-    domain: "sbluxurycasual.com",
+    domain: "sbluxurycasual.net",
   },
   assets: {
     hero: {

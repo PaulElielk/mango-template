@@ -18,7 +18,7 @@ Créer les variables suivantes en local et sur Vercel :
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-NEXT_PUBLIC_SITE_URL=
+NEXT_PUBLIC_SITE_URL=https://sbluxurycasual.net
 ```
 
 ## Commandes
@@ -35,6 +35,6 @@ Avant une mise en production, prévoir la configuration de `NEXT_PUBLIC_SITE_URL
 
 ## Notes de déploiement
 
-Avant de connecter `sbluxurycasual.com`, valider une Preview Vercel avec les variables Supabase configurées, tester `/shop`, une page produit, le panier et une demande de commande complète, puis confirmer la création des lignes dans Supabase.
+Avant de connecter `sbluxurycasual.net`, valider une Preview Vercel avec les variables Supabase configurées, tester `/shop`, une page produit, le panier et une demande de commande complète, puis confirmer la création des lignes dans Supabase.
 
 Pour cette V1 gratuite, le site utilise Supabase directement sans Prisma. Les produits sont lus depuis Supabase, les demandes de commande sont enregistrées dans Supabase, et les images produits sont servies depuis `public/products/`. Il n’y a pas encore d’admin dashboard, de paiement en ligne, d’authentification client, d’envoi e-mail, d’API WhatsApp ni de Supabase Storage.
